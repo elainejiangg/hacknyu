@@ -1,0 +1,35 @@
+# Node modules directory
+node_modules/
+
+# Log files
+*.log
+
+# Environment variables file (sensitive data)
+.env
+
+# Sequelize CLI generated files (migrations, models, seeders, etc.)
+/config/config.js
+
+# Operating system files
+.DS_Store
+
+# npm package lock file (optional, but good for consistency)
+package-lock.json
+
+# Editor directories and files (optional)
+.idea/
+.vscode/
+
+# Temporary or build directories (e.g., for compiled files or runtime files)
+dist/
+build/
+
+# Coverage directory (for code coverage reports)
+coverage/
+
+# Optional: Ignore any test-related files or directories
+test/
+tests/
+
+# Optional: Ignore the database file if using SQLite (or other local databases)
+*.sqlite
