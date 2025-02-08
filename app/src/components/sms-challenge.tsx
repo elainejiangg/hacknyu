@@ -12,12 +12,6 @@ export function SMSChallenge() {
       instruction="Click on any suspicious elements in this text message:"
       selectedElements={selectedElements}
       onSelect={handleSelect}
-      hints={[
-        "Urgent language creating pressure",
-        "Suspicious URL",
-        "Unsolicited message about account security",
-        "Generic sender number",
-      ]}
     >
       <MessageBubble
         sender="+1 (555) 0123"

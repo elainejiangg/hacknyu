@@ -16,8 +16,8 @@ export default function GamePage() {
         <div className="w-[70%] p-6">
           <Card className="h-full bg-white/5 border-white/10 p-6">
             {/* <WebsiteChallenge /> */}
-            {/* <SMSChallenge /> */}
-            <EmailChallenge />
+            <SMSChallenge />
+            {/* <EmailChallenge /> */}
           </Card>
         </div>
 

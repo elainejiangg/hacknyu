@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Selection } from "@/types/challenge";
 
 interface MessageBubbleProps {
   sender: string;
   messageParts: string[];
-  onSelect: (selection: { type: "sender" | "message"; index?: number }) => void;
-  selectedElements: { type: "sender" | "message"; index?: number }[];
+  onSelect: (selection: Selection) => void;
+  selectedElements: Selection[];
 }
 
 function generateRandomTimestamp() {
@@ -28,16 +29,15 @@ export function MessageBubble({
     setTimestamp(generateRandomTimestamp());
   }, []);
 
-  const isSenderSelected = selectedElements.some((el) => el.type === "sender");
-  const isPartSelected = (index: number) =>
-    selectedElements.some((el) => el.type === "message" && el.index === index);
+  const isSelected = (type: Selection["type"], index: number) =>
+    selectedElements.some((el) => el.type === type && el.index === index);
 
   const handleSenderClick = () => {
     console.log("Clicked sender:", { type: "sender" });
-    if (isSenderSelected) {
-      onSelect({ type: "sender" }); // Will be removed in parent
+    if (isSelected("sender", -1)) {
+      onSelect({ type: "sender", index: -1 }); // Will be removed in parent
     } else {
-      onSelect({ type: "sender" }); // Will be added in parent
+      onSelect({ type: "sender", index: -1 }); // Will be added in parent
     }
   };
 
@@ -47,7 +47,7 @@ export function MessageBubble({
       index,
       text: messageParts[index],
     });
-    if (isPartSelected(index)) {
+    if (isSelected("message", index)) {
       onSelect({ type: "message", index }); // Will be removed in parent
     } else {
       onSelect({ type: "message", index }); // Will be added in parent
@@ -61,7 +61,11 @@ export function MessageBubble({
         <div className="text-white/60 text-lg font-pixel">
           <span
             className={`cursor-pointer transition-colors rounded px-0.5
-              ${isSenderSelected ? "bg-lime-400/30" : "hover:bg-lime-400/30"}`}
+              ${
+                isSelected("sender", -1)
+                  ? "bg-lime-400/30"
+                  : "hover:bg-lime-400/30"
+              }`}
             onClick={handleSenderClick}
           >
             {sender}
@@ -79,7 +83,7 @@ export function MessageBubble({
                 key={index}
                 className={`cursor-pointer transition-colors rounded px-0.5
                   ${
-                    isPartSelected(index)
+                    isSelected("message", index)
                       ? "bg-lime-400/30"
                       : "hover:bg-lime-400/30"
                   }`}

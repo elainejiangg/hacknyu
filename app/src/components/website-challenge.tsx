@@ -1,13 +1,21 @@
 "use client";
-
 import { Card } from "@/components/ui/card";
+import { useSelectionState } from "@/hooks/useSelectionState";
+import { Selection } from "@/types/challenge";
 
 interface BrowserWindowProps {
   url: string;
   children: React.ReactNode;
+  onSelect: (selection: Selection) => void;
+  isSelected: (type: Selection["type"], index: number) => boolean;
 }
 
-function BrowserWindow({ url, children }: BrowserWindowProps) {
+function BrowserWindow({
+  url,
+  children,
+  onSelect,
+  isSelected,
+}: BrowserWindowProps) {
   return (
     <div className="w-full bg-black/20 rounded-xl overflow-hidden border border-white/10">
       {/* Browser chrome/toolbar */}
@@ -15,7 +23,17 @@ function BrowserWindow({ url, children }: BrowserWindowProps) {
         {/* URL bar */}
         <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 font-mono text-sm">
           <span className="text-white/60">https://</span>
-          <span className="text-white/90">{url}</span>
+          <span
+            className={`text-white/90 cursor-pointer ${
+              isSelected("url", -1) ? "bg-lime-400/30" : "hover:bg-lime-400/30"
+            }`}
+            onClick={() => {
+              console.log("Clicked URL");
+              onSelect({ type: "url", index: -1 });
+            }}
+          >
+            {url}
+          </span>
         </div>
       </div>
 
@@ -31,6 +49,8 @@ interface WebsiteContentProps {
   passwordPlaceholder?: string;
   buttonText: string;
   footerParts: string[];
+  onSelect: (selection: Selection) => void;
+  isSelected: (type: Selection["type"], index: number) => boolean;
 }
 
 function WebsiteContent({
@@ -39,6 +59,8 @@ function WebsiteContent({
   passwordPlaceholder = "Enter your password",
   buttonText,
   footerParts,
+  onSelect,
+  isSelected,
 }: WebsiteContentProps) {
   return (
     <div className="max-w-md mx-auto space-y-8">
@@ -47,7 +69,15 @@ function WebsiteContent({
           {titleParts.map((part, index) => (
             <span
               key={index}
-              className="hover:bg-lime-400/30 cursor-pointer transition-colors rounded px-0.5"
+              className={`cursor-pointer ${
+                isSelected("title", index)
+                  ? "bg-lime-400/30"
+                  : "hover:bg-lime-400/30"
+              }`}
+              onClick={() => {
+                console.log(`Clicked title ${index}`);
+                onSelect({ type: "title", index } as Selection);
+              }}
             >
               {part}
             </span>
@@ -89,14 +119,23 @@ function WebsiteContent({
         </button>
       </div>
 
-      <div className="text-center text-sm text-white/40">
+      <div className="text-center text-sm">
         {footerParts.map((part, index) => (
-          <p
-            key={index}
-            className="hover:bg-lime-400/30 cursor-pointer transition-colors rounded px-0.5"
-          >
-            {part}
-          </p>
+          <div key={index} className="text-center">
+            <span
+              className={`text-[#0070ba] cursor-pointer ${
+                isSelected("footer", index)
+                  ? "bg-lime-400/30"
+                  : "hover:bg-lime-400/30"
+              }`}
+              onClick={() => {
+                console.log(`Clicked footer ${index}`);
+                onSelect({ type: "footer", index });
+              }}
+            >
+              {part}
+            </span>
+          </div>
         ))}
       </div>
     </div>
@@ -104,6 +143,8 @@ function WebsiteContent({
 }
 
 export function WebsiteChallenge() {
+  const { selectedElements, handleSelect, isSelected } = useSelectionState();
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-pixel">Detect the Phishing Attempt</h2>
@@ -112,7 +153,11 @@ export function WebsiteChallenge() {
           Click on any suspicious elements in this website:
         </p>
         <div className="mt-8 mb-8">
-          <BrowserWindow url="secure-paypaI.com/login">
+          <BrowserWindow
+            url="secure-paypaI.com/login"
+            onSelect={handleSelect}
+            isSelected={isSelected}
+          >
             <WebsiteContent
               titleParts={["PaypaI"]}
               buttonText="Log In"
@@ -120,17 +165,10 @@ export function WebsiteChallenge() {
                 "Having trouble logging in?",
                 "Reset your password",
               ]}
+              onSelect={handleSelect}
+              isSelected={isSelected}
             />
           </BrowserWindow>
-        </div>
-        <div className="mt-8 p-6 bg-white/5 rounded-lg">
-          <p className="text-base font-pixel text-white/60">
-            Suspicious elements:
-            <br />- Misspelled domain (PaypaI with capital I)
-            <br />- Suspicious URL (not paypal.com)
-            <br />- Slightly off brand styling
-            <br />- Unusual security certificate
-          </p>
         </div>
       </div>
     </div>
