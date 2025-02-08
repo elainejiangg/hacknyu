@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Dashboard } from "@/components/dashboard";
-import { GameScreen } from "@/components/game-screen";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -33,7 +32,7 @@ export default function LandingPage() {
             </Button>
             <Button
               variant="outline"
-              className="w-full font-pixel py-6 hover:bg-white/10 border-white/20"
+              className="w-full font-pixel py-6 bg-white/10 hover:bg-white/20 border-white/20"
               onClick={() => (window.location.href = "/login")}
             >
               LOG IN
