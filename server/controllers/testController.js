@@ -1,3 +1,4 @@
+const axios = require('axios');
 require('dotenv').config({ path: '../.env' });
 console.log("OpenAI API Key:", process.env.OPENAI_API_KEY);
 
@@ -49,7 +50,19 @@ async function generatePhishingEmail(selectedFeatureNames, nonSelectedFeatureNam
     }
 }
 
-selectedFeatureNames = ['greetings', 'introduction', 'problem/message'];
-nonSelectedFeatureNames = ['call-to-action', 'links/resources', 'contact'];
-phishingEmail = generatePhishingEmail(selectedFeatureNames, nonSelectedFeatureNames)
-console.log(phishingEmail);
+// selectedFeatureNames = ['greetings', 'introduction', 'problem/message'];
+// nonSelectedFeatureNames = ['call-to-action', 'links/resources', 'contact'];
+// phishingEmail = generatePhishingEmail(selectedFeatureNames, nonSelectedFeatureNames)
+// console.log(phishingEmail);
+
+(async () => {
+    const selectedFeatureNames = ['greetings', 'introduction', 'problem/message'];
+    const nonSelectedFeatureNames = ['call-to-action', 'links/resources', 'contact'];
+
+    try {
+        const phishingEmail = await generatePhishingEmail(selectedFeatureNames, nonSelectedFeatureNames);
+        console.log(phishingEmail); // ✅ Now prints the actual generated text
+    } catch (error) {
+        console.error("Failed to generate phishing email.");
+    }
+})();
