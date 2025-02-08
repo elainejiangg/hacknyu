@@ -4,11 +4,11 @@ import { Card } from "@/components/ui/card";
 
 export function GameScreen() {
   return (
-    <div className="min-h-screen min-w-screen bg-black text-white">
+    <div className="fixed inset-0 bg-black text-white">
       {/* Grid background overlay */}
       <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
-      <div className="flex h-screen">
+      <div className="flex w-full h-full">
         {/* Left section - Game content (70% width) */}
         <div className="w-[70%] p-6">
           <Card className="h-full bg-white/5 border-white/10 p-6">
