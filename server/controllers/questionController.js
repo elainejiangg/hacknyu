@@ -19,6 +19,35 @@ exports.generateQuestion = async (req, res) => {
 
 }
 
+async function getRandomCategoryForUser(userId) {
+    try {
+        const result = await UserCategory.findOne({
+            where: { user_id: userId },
+            include: [{
+                model: Category,
+                as: 'category',
+                attributes: ['id', 'name']
+            }],
+            order: [
+                [Sequelize.literal('RAND() / (exp + 1)'), 'DESC'] // Weighted randomness
+            ],
+            limit: 1
+        });
+
+        if (!result) {
+            return null; // No category found for the user
+        }
+
+        return {
+            category_id: result.category.id,
+            category_name: result.category.name
+        };
+    } catch (error) {
+        console.error('Error fetching random category:', error);
+        throw error;
+    }
+}
+
 async function getRandomFeaturesForCategory(categoryId) {
     try {
         // Fetch all features under the given category_id
@@ -58,37 +87,6 @@ async function getRandomFeaturesForCategory(categoryId) {
 }
 
 
-
-async function getRandomFeaturesForCategory(categoryId) {
-    try {
-        // Get the total number of features available under the given category_id
-        const totalFeatures = await Feature.count({
-            where: { category_id: categoryId }
-        });
-
-        if (totalFeatures === 0) {
-            return null; // No features available in this category
-        }
-
-        // Randomly decide how many features to select (between 1 and totalFeatures)
-        const numToSelect = Math.floor(Math.random() * totalFeatures) + 1; 
-
-        // Fetch random features using ORDER BY RAND() and LIMIT numToSelect
-        const features = await Feature.findAll({
-            where: { category_id: categoryId },
-            order: Sequelize.literal('RAND()'),
-            limit: numToSelect
-        });
-
-        return features.map(feature => ({
-            feature_id: feature.id,
-            feature_name: feature.name
-        }));
-    } catch (error) {
-        console.error('Error fetching random features:', error);
-        throw error;
-    }
-}
 
 async function generatePhishingEmail(selectedFeatureNames, nonSelectedFeatureNames) {
     try {
