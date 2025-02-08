@@ -114,7 +114,7 @@ export function WebsiteChallenge() {
         <div className="mt-8 mb-8">
           <BrowserWindow url="secure-paypaI.com/login">
             <WebsiteContent
-              titleParts={["Pay", "paI"]}
+              titleParts={["PaypaI"]}
               buttonText="Log In"
               footerParts={[
                 "Having trouble logging in?",

@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 export interface Selection {
-  type: string; // More generic than just 'sender' | 'message'
+  type: "sender" | "message";
   index?: number;
 }
 

@@ -7,9 +7,6 @@ import { useSelectionState } from "@/hooks/useSelectionState";
 export function SMSChallenge() {
   const { selectedElements, handleSelect, isSelected } = useSelectionState();
 
-  // Log whenever selectedElements changes
-  console.log("SMS Challenge - Selected Elements:", selectedElements);
-
   return (
     <ChallengeBase
       instruction="Click on any suspicious elements in this text message:"
