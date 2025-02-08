@@ -37,7 +37,7 @@ db.sequelize.authenticate()
     console.log('Successful connection to the database.');
 
     // Sync the models before starting the server
-    return db.sequelize.sync({ force: true });
+    return db.sequelize.sync({ alter: true });
   })
   .then(() => {
     console.log('Models synced successfully.');
