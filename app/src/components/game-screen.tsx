@@ -1,100 +1,50 @@
 "use client";
 
-import { useState } from "react";
 import { Card } from "@/components/ui/card";
 
-interface PhishingContent {
-  text: string;
-  redFlags: { start: number; end: number; explanation: string }[];
-}
-
-const sampleContent: PhishingContent = {
-  text: "Dear valued customer, Your account security needs immediate attention. Click here to verify your information: http://totally-legit-bank.com",
-  redFlags: [
-    { start: 0, end: 19, explanation: "Generic greeting" },
-    { start: 85, end: 109, explanation: "Suspicious URL" },
-  ],
-};
-
 export function GameScreen() {
-  const [hookPosition, setHookPosition] = useState(0);
-  const [selectedRanges, setSelectedRanges] = useState<number[]>([]);
-
-  const handleTextClick = (index: number) => {
-    const isRedFlag = sampleContent.redFlags.some(
-      (flag) => index >= flag.start && index < flag.end
-    );
-    const isSelected = selectedRanges.includes(index);
-
-    if (!isSelected && !isRedFlag) {
-      setHookPosition((prev) => Math.min(prev + 20, 100));
-    }
-
-    setSelectedRanges((prev) => {
-      if (isSelected) {
-        return prev.filter((i) => i !== index);
-      }
-      return [...prev, index];
-    });
-  };
-
   return (
-    <div className="min-h-screen bg-grid-pattern p-6">
-      <div className="container max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-6">
-          <Card className="md:col-span-2 p-6">
-            <div className="font-mono text-lg whitespace-pre-wrap">
-              {sampleContent.text.split("").map((char, i) => {
-                const isRedFlag = sampleContent.redFlags.some(
-                  (flag) => i >= flag.start && i < flag.end
-                );
-                const isSelected = selectedRanges.includes(i);
+    <div className="min-h-screen min-w-screen bg-black text-white">
+      {/* Grid background overlay */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
-                return (
-                  <span
-                    key={i}
-                    className={`cursor-pointer ${
-                      isSelected ? "bg-destructive/20" : ""
-                    } ${isRedFlag ? "hover:bg-destructive/10" : ""}`}
-                    onClick={() => handleTextClick(i)}
-                  >
-                    {char}
-                  </span>
-                );
-              })}
+      <div className="flex h-screen">
+        {/* Left section - Game content (70% width) */}
+        <div className="w-[70%] p-6">
+          <Card className="h-full bg-white/5 border-white/10 p-6">
+            {/* This will contain your phishing detection content */}
+            <div className="space-y-4">
+              <h2 className="text-xl font-pixel">
+                Detect the Phishing Attempt
+              </h2>
+              <div className="prose prose-invert">
+                {/* Example content - replace with your actual game content */}
+                <p className="font-pixel">
+                  Click on any suspicious elements in the content below:
+                </p>
+                <div className="mt-4 p-4 bg-white/5 rounded-lg">
+                  {/* This will be your interactive content */}
+                  <p>
+                    Content with clickable suspicious elements will go here...
+                  </p>
+                </div>
+              </div>
             </div>
           </Card>
+        </div>
 
-          <Card className="bg-black relative">
-            <div
-              className="absolute right-4 w-px h-full bg-white"
-              style={{
-                clipPath: `inset(${hookPosition}% 0 0 0)`,
-              }}
-            >
-              <div className="absolute bottom-0 right-0 transform translate-x-1/2">
-                <FishHook className="text-white w-6 h-6" />
-              </div>
+        {/* Right section - Graphics (30% width) */}
+        <div className="w-[30%] p-6">
+          <Card className="h-full bg-white/5 border-white/10 p-6">
+            {/* This will be your fish and hook graphics */}
+            <div className="h-full flex items-center justify-center">
+              <p className="text-white/60 font-pixel">
+                Graphics coming soon...
+              </p>
             </div>
           </Card>
         </div>
       </div>
     </div>
-  );
-}
-
-function FishHook({ className = "" }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M12 2v6m0 0a4 4 0 1 0 4 4v-3" />
-    </svg>
   );
 }

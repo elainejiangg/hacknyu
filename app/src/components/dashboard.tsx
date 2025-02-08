@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 
 interface ExpBarProps {
   current: number;
@@ -33,6 +34,8 @@ function ExpBar({ current, max, label, level }: ExpBarProps) {
 }
 
 export function Dashboard() {
+  const router = useRouter();
+
   return (
     <div className="min-h-screen bg-black p-6 text-white">
       {/* Grid background overlay */}
@@ -79,7 +82,7 @@ export function Dashboard() {
             <Button
               size="lg"
               className="w-full font-pixel py-6 bg-white/10 hover:bg-white/20 border-white/20"
-              onClick={() => console.log("Start game")}
+              onClick={() => router.push("/game")}
             >
               Start Fishing
             </Button>
