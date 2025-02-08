@@ -3,6 +3,7 @@
 import { Card } from "@/components/ui/card";
 import { SMSChallenge } from "@/components/sms-challenge";
 import { WebsiteChallenge } from "@/components/website-challenge";
+import { Gmail } from "@/components/gmail";
 
 export default function GamePage() {
   return (
@@ -15,7 +16,8 @@ export default function GamePage() {
         <div className="w-[70%] p-6">
           <Card className="h-full bg-white/5 border-white/10 p-6">
             {/* <WebsiteChallenge /> */}
-            <SMSChallenge />
+            {/* <SMSChallenge /> */}
+            <Gmail />
           </Card>
         </div>
 

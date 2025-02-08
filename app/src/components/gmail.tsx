@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Gmail: React.FC = () => {
+export function Gmail(): React.FC {
   const [highlighted, setHighlighted] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
 
@@ -11,7 +11,6 @@ const Gmail: React.FC = () => {
   return (
     <div className="flex h-full">
       <div className="flex flex-col w-1/4 border-r border-gray-700">
-        {" "}
         {/* Smaller sidebar for Gmail categories */}
         <h2 className="text-lg font-pixel mb-4">Fishmail</h2>
         <ul className="space-y-2">
@@ -24,16 +23,15 @@ const Gmail: React.FC = () => {
         </ul>
       </div>
       <div className="flex-1 mt-4 p-4 bg-black rounded-lg">
-        {" "}
         {/* Black background for email message portion */}
         {/* Email Header */}
         <div className="mb-4">
           <h3
             className={`font-bold text-xl ${
               highlighted === "header"
-                ? "text-yellow-500 bg-lime-200"
+                ? "text-yellow-500 bg-lime-400/30" // Updated
                 : "text-white"
-            } ${hovered === "header" ? "bg-lime-200" : ""}`}
+            } ${hovered === "header" ? "hover:bg-lime-400/30" : ""}`} // Updated
             onClick={() => handleHighlight("header")}
             onMouseEnter={() => setHovered("header")}
             onMouseLeave={() => setHovered(null)}
@@ -43,9 +41,9 @@ const Gmail: React.FC = () => {
           <p
             className={`text-gray-400 text-sm ${
               highlighted === "timestamp"
-                ? "text-yellow-500 bg-lime-200"
+                ? "text-yellow-500 bg-lime-400/30" // Updated
                 : "text-gray-400"
-            } ${hovered === "timestamp" ? "bg-lime-200" : ""}`}
+            } ${hovered === "timestamp" ? "hover:bg-lime-400/30" : ""}`} // Updated
             onClick={() => handleHighlight("timestamp")}
             onMouseEnter={() => setHovered("timestamp")}
             onMouseLeave={() => setHovered(null)}
@@ -59,9 +57,9 @@ const Gmail: React.FC = () => {
           <p
             className={`text-white font-pixel ${
               highlighted === "greeting"
-                ? "text-yellow-500 bg-lime-200"
+                ? "text-yellow-500 bg-lime-400/30" // Updated
                 : "text-white"
-            } ${hovered === "greeting" ? "bg-lime-200" : ""}`}
+            } ${hovered === "greeting" ? "hover:bg-lime-400/30" : ""}`} // Updated
             onClick={() => handleHighlight("greeting")}
             onMouseEnter={() => setHovered("greeting")}
             onMouseLeave={() => setHovered(null)}
@@ -71,9 +69,9 @@ const Gmail: React.FC = () => {
           <p
             className={`text-white font-pixel ${
               highlighted === "warning"
-                ? "text-yellow-500 bg-lime-200"
+                ? "text-yellow-500 bg-lime-400/30" // Updated
                 : "text-white"
-            } ${hovered === "warning" ? "bg-lime-200" : ""}`}
+            } ${hovered === "warning" ? "hover:bg-lime-400/30" : ""}`} // Updated
             onClick={() => handleHighlight("warning")}
             onMouseEnter={() => setHovered("warning")}
             onMouseLeave={() => setHovered(null)}
@@ -85,9 +83,9 @@ const Gmail: React.FC = () => {
           <p
             className={`text-blue-500 font-pixel ${
               highlighted === "link"
-                ? "text-yellow-500 bg-lime-200"
+                ? "text-yellow-500 bg-lime-400/30" // Updated
                 : "text-blue-500"
-            } ${hovered === "link" ? "bg-lime-200" : ""}`}
+            } ${hovered === "link" ? "hover:bg-lime-400/30" : ""}`} // Updated
             onClick={() => handleHighlight("link")}
             onMouseEnter={() => setHovered("link")}
             onMouseLeave={() => setHovered(null)}
@@ -99,9 +97,9 @@ const Gmail: React.FC = () => {
           <p
             className={`text-white font-pixel ${
               highlighted === "suspension"
-                ? "text-yellow-500 bg-lime-200"
+                ? "text-yellow-500 bg-lime-400/30" // Updated
                 : "text-white"
-            } ${hovered === "suspension" ? "bg-lime-200" : ""}`}
+            } ${hovered === "suspension" ? "hover:bg-lime-400/30" : ""}`} // Updated
             onClick={() => handleHighlight("suspension")}
             onMouseEnter={() => setHovered("suspension")}
             onMouseLeave={() => setHovered(null)}
@@ -111,9 +109,9 @@ const Gmail: React.FC = () => {
           <p
             className={`text-white font-pixel ${
               highlighted === "thanks"
-                ? "text-yellow-500 bg-lime-200"
+                ? "text-yellow-500 bg-lime-400/30" // Updated
                 : "text-white"
-            } ${hovered === "thanks" ? "bg-lime-200" : ""}`}
+            } ${hovered === "thanks" ? "hover:bg-lime-400/30" : ""}`} // Updated
             onClick={() => handleHighlight("thanks")}
             onMouseEnter={() => setHovered("thanks")}
             onMouseLeave={() => setHovered(null)}
@@ -123,9 +121,9 @@ const Gmail: React.FC = () => {
           <p
             className={`text-white font-pixel ${
               highlighted === "signature"
-                ? "text-yellow-500 bg-lime-200"
+                ? "text-yellow-500 bg-lime-400/30" // Updated
                 : "text-white"
-            } ${hovered === "signature" ? "bg-lime-200" : ""}`}
+            } ${hovered === "signature" ? "hover:bg-lime-400/30" : ""}`} // Updated
             onClick={() => handleHighlight("signature")}
             onMouseEnter={() => setHovered("signature")}
             onMouseLeave={() => setHovered(null)}
@@ -137,7 +135,7 @@ const Gmail: React.FC = () => {
           <button
             className={`bg-gray-600 text-white px-4 py-2 rounded mt-2 ${
               highlighted === "report" ? "bg-yellow-500" : "bg-gray-600"
-            } ${hovered === "report" ? "bg-lime-200" : ""}`}
+            } ${hovered === "report" ? "hover:bg-lime-400/30" : ""}`} // Updated
             onClick={() => handleHighlight("report")}
             onMouseEnter={() => setHovered("report")}
             onMouseLeave={() => setHovered(null)}
@@ -168,6 +166,6 @@ const Gmail: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Gmail;
