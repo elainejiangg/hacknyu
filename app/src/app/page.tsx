@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Dashboard } from "@/components/dashboard";
-import { GameScreen } from "@/components/game-screen";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
