@@ -3,7 +3,7 @@ const db = require('./models'); // Loads models and Sequelize instance from inde
 const session = require('express-session')
 const passport = require('./config/passport')
 require('dotenv').config()
-// const userRouter = require("./routes/userRoutes");
+const authRouter = require("./routes/authRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,8 +23,8 @@ app.use(session({
 }));
 
 // Initialize Passport.js and session handling
-// app.use(passport.initialize())
-// app.use(passport.session())
+app.use(passport.initialize())
+app.use(passport.session())
 
 console.log('Database Host:', process.env.DB_HOST_DEV);
 console.log('Database User:', process.env.DB_USER_DEV);
@@ -43,7 +43,7 @@ db.sequelize.authenticate()
     console.log('Models synced successfully.');
 
     // Register routes (uncomment and add your routes here)
-    // app.use('/users', userRouter);
+    app.use('/auth', authRouter);
 
     // Start the server after confirming the connection and sync
     app.listen(PORT, () => {

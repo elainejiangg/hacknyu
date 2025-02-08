@@ -1,24 +1,17 @@
 const express = require('express');
-const {  } = require('../controllers/authController');
+const passport = require('passport')
+const { registerUser, loginUser, logoutUser } = require('../controllers/authController');
 const { isLoggedIn } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-router.get('/login', )
+// Register a new user
+router.post('/register', registerUser)
 
-// Retrieve papers associated with keyword for user
-// router.get('/:userId/feed', isLoggedIn, getUserPapers)
+// Login an existing user
+router.post('/login', loginUser)
 
-// // Delete paper from feed
-// router.post('/:userId/feed/exclude', isLoggedIn, excludePaperFromFeed)
-
-// // Get tracked keywords
-// router.get('/:userId/keywords', isLoggedIn, getKeywords)
-
-// // Add new keyword
-// router.post('/:userId/keywords', isLoggedIn, addKeyword)
-
-// // Delete a keyword
-// router.delete('/:userId/keywords/:keywordId', isLoggedIn, deleteKeyword)
+// Logout a user
+router.post('/logout', isLoggedIn, logoutUser)
 
 module.exports = router;
