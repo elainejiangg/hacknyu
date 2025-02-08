@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground: 0, 0, 0;
+  --background: 255, 255, 255;
+  --primary: 0, 0, 0;
+  --primary-foreground: 255, 255, 255;
+  --card: 255, 255, 255;
+  --card-foreground: 0, 0, 0;
+  --border: 220, 220, 220;
+  --input: 220, 220, 220;
+  --accent: 240, 240, 240;
+  --accent-foreground: 0, 0, 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
