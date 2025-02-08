@@ -1,6 +1,6 @@
 const {  } = require('../models');
 const { Sequelize } = require('sequelize');
-// const axios = require('axios');
+const axios = require('axios');
 require('dotenv').config({ path: '../.env' });
 
 console.log("OpenAI API Key:", process.env.OPENAI_API_KEY);
