@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Selection } from "../hooks/useSelectionState";
+import { ChallengeContent } from "../types/challenge";
 
 interface MessageBubbleProps {
   sender: string;
-  messageParts: string[];
-  onSelect: (selection: { type: "sender" | "message"; index?: number }) => void;
-  selectedElements: { type: "sender" | "message"; index?: number }[];
+  timestamp: string;
+  contentParts: ChallengeContent[];
+  onSelect: (selection: Selection) => void;
+  isSelected: (type: Selection["type"], index?: number) => boolean;
 }
 
 function generateRandomTimestamp() {
@@ -18,40 +21,29 @@ function generateRandomTimestamp() {
 
 export function MessageBubble({
   sender,
-  messageParts,
+  timestamp,
+  contentParts,
   onSelect,
-  selectedElements,
+  isSelected,
 }: MessageBubbleProps) {
-  const [timestamp, setTimestamp] = useState("Today --:-- --");
+  const [localTimestamp, setLocalTimestamp] = useState("Today --:-- --");
 
   useEffect(() => {
-    setTimestamp(generateRandomTimestamp());
+    setLocalTimestamp(generateRandomTimestamp());
   }, []);
-
-  const isSenderSelected = selectedElements.some((el) => el.type === "sender");
-  const isPartSelected = (index: number) =>
-    selectedElements.some((el) => el.type === "message" && el.index === index);
 
   const handleSenderClick = () => {
     console.log("Clicked sender:", { type: "sender" });
-    if (isSenderSelected) {
-      onSelect({ type: "sender" }); // Will be removed in parent
-    } else {
-      onSelect({ type: "sender" }); // Will be added in parent
-    }
+    onSelect({ type: "sender" });
   };
 
   const handlePartClick = (index: number) => {
     console.log("Clicked message part:", {
       type: "message",
       index,
-      text: messageParts[index],
+      text: contentParts[index].content,
     });
-    if (isPartSelected(index)) {
-      onSelect({ type: "message", index }); // Will be removed in parent
-    } else {
-      onSelect({ type: "message", index }); // Will be added in parent
-    }
+    onSelect({ type: "message", index });
   };
 
   return (
@@ -61,31 +53,42 @@ export function MessageBubble({
         <div className="text-white/60 text-lg font-pixel">
           <span
             className={`cursor-pointer transition-colors rounded px-0.5
-              ${isSenderSelected ? "bg-lime-400/30" : "hover:bg-lime-400/30"}`}
+              ${
+                isSelected("sender") ? "bg-lime-400/30" : "hover:bg-lime-400/30"
+              }`}
             onClick={handleSenderClick}
           >
             {sender}
           </span>
         </div>
-        <div className="text-white/40 text-base font-pixel">{timestamp}</div>
+        <div className="text-white/40 text-base font-pixel">
+          {localTimestamp}
+        </div>
       </div>
 
       {/* Message bubble */}
       <div className="flex justify-start">
         <div className="bg-white/10 rounded-3xl rounded-tl-sm px-6 py-4 max-w-[90%]">
           <p className="text-white font-pixel text-lg leading-relaxed">
-            {messageParts.map((part, index) => (
+            {contentParts.map((part, index) => (
               <span
                 key={index}
                 className={`cursor-pointer transition-colors rounded px-0.5
                   ${
-                    isPartSelected(index)
+                    isSelected("message", index)
                       ? "bg-lime-400/30"
                       : "hover:bg-lime-400/30"
                   }`}
-                onClick={() => handlePartClick(index)}
+                onClick={() => {
+                  console.log("SMS selection:", {
+                    type: part.type,
+                    index,
+                    content: part.content,
+                  });
+                  onSelect({ type: part.type, index });
+                }}
               >
-                {part}
+                {part.content}
               </span>
             ))}
           </p>

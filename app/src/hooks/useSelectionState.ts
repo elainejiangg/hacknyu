@@ -3,8 +3,20 @@
 import { useState } from "react";
 
 export interface Selection {
-  type: "sender" | "message";
+  type:
+    | "greeting"
+    | "body"
+    | "link"
+    | "warning"
+    | "signature"
+    | "sender"
+    | "message"
+    | "title"
+    | "input"
+    | "button"
+    | "footer";
   index?: number;
+  content?: string;
 }
 
 export function useSelectionState() {
@@ -26,8 +38,11 @@ export function useSelectionState() {
     });
   };
 
-  const isSelected = (type: string, index?: number) =>
-    selectedElements.some((el) => el.type === type && el.index === index);
+  const isSelected = (type: Selection["type"], index: number) => {
+    return selectedElements.some(
+      (element) => element.type === type && element.index === index
+    );
+  };
 
   return {
     selectedElements,
