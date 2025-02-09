@@ -6,13 +6,7 @@ const passport = require("./config/passport");
 require("dotenv").config();
 const authRouter = require("./routes/authRoutes");
 // const testRouter = require("./routes/testRoutes")
-const questionRouter = require("./routes/questionRoutes");
-
-const {
-  getRandomCategoryForUser,
-  getRandomFeaturesForCategory,
-} = require("./middlewares/questionMiddleware");
-const { isLoggedIn } = require("./middlewares/authMiddleware");
+const questionRouter = require("./routes/questionRoutes")
 
 const app = express();
 const PORT = 3001; // Force port 3001

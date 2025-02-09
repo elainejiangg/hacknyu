@@ -141,8 +141,10 @@ exports.generatePhishingContent = async (req, res, next) => {
   }
 
   const data = await response.json();
-  const phishingEmail = data.choices[0].message.content;
-  return res.status(200).json(JSON.parse(phishingEmail));
+  const phishingContent = data.choices[0].message.content;
+  req.phisingContent = JSON.parse(phishingContent);
+  next();
+  // return res.status(200).json(JSON.parse(phishingEmail));
 }
 
 
