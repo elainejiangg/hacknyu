@@ -12,7 +12,18 @@ function generateRandomTimestamp() {
   return `Today ${hours}:${minutes.toString().padStart(2, "0")} ${ampm}`;
 }
 
-export function EmailChallenge() {
+export function EmailChallenge({
+  parts,
+}: {
+  questionId: number;
+  parts: {
+    id: number;
+    question_id: number;
+    order: number;
+    question_part_content: string;
+    is_suspicious: boolean;
+  }[];
+}) {
   const { selectedElements, handleSelect, isSelected } = useSelectionState();
   const [timestamp, setTimestamp] = useState("Today --:-- --");
 
@@ -21,18 +32,24 @@ export function EmailChallenge() {
   }, []);
 
   const challengeData = {
-    sender: "support@banking-secure.com",
-    subject: "Important Account Verification",
+    subject:
+      parts[0]["question_part_content"] || "Important Account Verification",
+    sender: parts[1]["question_part_content"] || "support@banking-secure.com",
     timestamp,
-    body: [
-      "Dear Customer,",
-      "We have detected unusual activity in your account. To ensure your security, please verify your account immediately by clicking the link below:",
-      "Verify My Account",
-      "Failure to verify your account may result in temporary suspension.",
-      "Thank you for your prompt attention to this matter.",
-      "Sincerely,\nCustomer Support Team",
-    ],
-    attachments: ["report.pdf"],
+    attachments: [parts[2]["question_part_content"]].filter(Boolean),
+    body: parts
+      .slice(3)
+      .map(
+        (part: {
+          id: number;
+          question_id: number;
+          order: number;
+          question_part_content: string;
+          is_suspicious: boolean;
+        }) => part["question_part_content"]
+      )
+      .filter(Boolean),
+    numRedFlags: parts.filter((part) => part.is_suspicious).length,
   };
 
   return (
@@ -40,6 +57,7 @@ export function EmailChallenge() {
       instruction="Click on any suspicious elements in this email:"
       selectedElements={selectedElements}
       onSelect={handleSelect}
+      possibleRedFlags={challengeData.numRedFlags}
     >
       <EmailViewer
         sender={challengeData.sender}

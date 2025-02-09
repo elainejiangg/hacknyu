@@ -15,20 +15,44 @@ interface ChallengeProps {
   };
 }
 
-export function SMSChallenge({ data, parts }: ChallengeProps) {
+export function SMSChallenge({
+  parts,
+}: {
+  questionId: number;
+  parts: {
+    id: number;
+    question_id: number;
+    order: number;
+    question_part_content: string;
+    is_suspicious: boolean;
+  }[];
+}) {
   const { selectedElements, handleSelect, isSelected } = useSelectionState();
 
   const smsData = {
-    sender: parts.sender || "+1 (555) 0123",
-    message: parts.message || [
-      "ALERT: ",
-      "Your bank account has been temporarily suspended. ",
-      "Urgent action required! ",
-      "Click here to verify your identity: ",
-      "http://secure-bank-verify.com/login",
-      ". ",
-      "Reply STOP to opt out.",
-    ],
+    sender: parts[0]["question_part_content"] || "+1 (555) 0123",
+    message: parts
+      .slice(1)
+      .map(
+        (part: {
+          id: number;
+          question_id: number;
+          order: number;
+          question_part_content: string;
+          is_suspicious: boolean;
+        }) => part["question_part_content"]
+      )
+      .filter(Boolean),
+
+    // parts.message || [
+    //   "ALERT: ",
+    //   "Your bank account has been temporarily suspended. ",
+    //   "Urgent action required! ",
+    //   "Click here to verify your identity: ",
+    //   "http://secure-bank-verify.com/login",
+    //   ". ",
+    //   "Reply STOP to opt out.",
+    // ],
   };
 
   return (

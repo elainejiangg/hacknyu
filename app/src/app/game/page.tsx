@@ -80,7 +80,28 @@ export default function GamePage() {
         {/* Left section - Game content (70% width) */}
         <div className="w-[70%] pl-8 pr-3 py-4">
           <Card className="h-full bg-white/5 border-white/10 p-12">
-            <EmailChallenge />
+            {questionData && questionParts && questionCategory && (
+              <div>
+                {questionCategory === 1 && (
+                  <WebsiteChallenge
+                    questionId={questionID}
+                    parts={questionParts["questionParts"]}
+                  />
+                )}
+                {questionCategory === 2 && (
+                  <SMSChallenge
+                    questionId={questionID}
+                    parts={questionParts["questionParts"]}
+                  />
+                )}
+                {questionCategory === 3 && (
+                  <EmailChallenge
+                    questionId={questionID}
+                    parts={questionParts["questionParts"]}
+                  />
+                )}
+              </div>
+            )}
           </Card>
         </div>
 
