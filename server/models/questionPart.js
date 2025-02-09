@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         allowNull: false
       },
+      question_id: {
+        type: DataTypes.INTEGER,
+        allowedNull: false,
+      },
       feature_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -17,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       user_answered_suspicious: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
+        allowNull: true,
       }
     }, {
       timestamps: true,
@@ -29,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'feature_id',
         as: 'feature'
       });
+      QuestionPart.belongsTo(models.Question, {
+        foreignKey: 'question_id',
+        as: 'question'
+      })
     };
 
     return QuestionPart;

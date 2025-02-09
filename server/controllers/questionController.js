@@ -36,8 +36,48 @@ exports.createQuestionWithParts = async (req, res, next) => {
             user_category_junction_id: userCategoryId
         });
 
+        const questionId = question.id;
+
         // Create question parts
-        // for (const [key])
+        for (const [key, value] of Object.entries(phishingContent)) {
+            if (key === 'body' && Array.isArray(value)) {
+                for (const sentence of value) {
+                    const bodyFeature = awaitFeature.findOne({
+                        where: {name: 'Message Body'},
+                    });
+
+                    if (!bodyFeature) {
+                        return res.status(404).json({ message: 'Body feature not found' });
+                    }
+                }
+
+                await questionPart.create({
+                    question_id: questionId,
+                    feature_id: bodyFeature.id,
+                    is_suspicious: sentence.suspicious,
+                    user_answered_suspicious: null,
+                })
+            } else if (value && typeof value === 'object' && value.text !== undefined) {
+                const featureName = key.charAt(0).toUpperCase() + key.slice(1);
+
+                const featureRecord = await featureName.findOne({
+                    where: { name: featureName },
+                })
+
+                if (!featureRecord) {
+                    return res.status(404).json({ message: `Feature ${featureName} not found` });
+                }
+
+                await questionPart.create({
+                    question_id: questionId,
+                    feature_id: featureRecord.id,
+                    is_suspicious: value.suspicious,
+                    user_answered_suspicious: null,
+                })
+            }
+        }
+
+        res.status(200).json({ message: 'Phishing content stored successfully in different question parts' })
 
     } catch (error) {
         console.error('Error creating question with parts:', error);
@@ -79,6 +119,7 @@ exports.getAllCategoryExps = async (req, res) => {
         res.status(500).json({ message: 'Error getting all exps' });
     }
 };
+
 
 // there should be middleware for submitting the response
 exports.updateCategoryExp = async (req, res) => {
