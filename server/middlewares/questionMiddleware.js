@@ -286,6 +286,7 @@ exports.generatePhishingContent = async (req, res, next) => {
 
     // Return both question and its parts
     return res.status(201).json({
+      category: categoryName,
       question,
       questionParts,
     });
@@ -302,6 +303,7 @@ async function getPrompt(categoryName, selectedFeatures, unselectedFeatures) {
   if (categoryName === "Email") {
     return `Generate a phishing email as a JSON object with the following structure:
 {
+"type": "Email",
 "subject": { "text": "<email subject>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
 "sender": { "text": "<email sender>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
 "attachment": { "text": "<attachment details>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
@@ -319,6 +321,7 @@ Ensure that the features in ${JSON.stringify(
   } else if (categoryName === "Text (SMS)") {
     return `Generate a phishing text message as a JSON object with the following structure:
 {
+"type": "Text (SMS)",
 "sender": { "text": "<phone number or email address>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
 "body": [
   { "text": "<sentence 1>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
@@ -334,6 +337,7 @@ Ensure that the features in ${JSON.stringify(
   } else if (categoryName === "Website") {
     return `Generate a phishing website as a JSON object with the following structure:
 {
+"type": "Website",
 "url": { "text": "<website URL>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
 "site_name": { "text": "<site name>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" }
 }
