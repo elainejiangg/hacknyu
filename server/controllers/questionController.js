@@ -1,6 +1,6 @@
 const { UserCategory, Category, Question, Feature } = require('../models');
 // const axios = require('axios');
-require('dotenv').config({ path: '../.env' });
+require("dotenv").config({ path: "../.env" });
 
 // exports.generateQuestion = async (req, res) => {
 
@@ -24,12 +24,14 @@ require('dotenv').config({ path: '../.env' });
 // }
 
 exports.createQuestionWithParts = async (req, res, next) => {
-    try {
-        const userId = req.userId;
-        const categoryId = req.selectedCategoryId;
-        const userCategory = await UserCategory.findOne({ where: { user_id: userId, category_id: categoryId } })
-        const userCategoryId = userCategory.id;
-        const phishingContent = req.phishingContent;
+  try {
+    const userId = req.userId;
+    const categoryId = req.selectedCategoryId;
+    const userCategory = await UserCategory.findOne({
+      where: { user_id: userId, category_id: categoryId },
+    });
+    const userCategoryId = userCategory.id;
+    const phishingContent = req.phishingContent;
 
         console.log('phishing content in q with parts: ', phishingContent)
 
@@ -96,51 +98,76 @@ exports.createQuestionWithParts = async (req, res, next) => {
 
 
 exports.getAllCategoryExps = async (req, res) => {
-    const userId = req.userId;
+  const userId = req.userId;
 
-    try {
-        const userCategories = await UserCategory.findAll({
-            where: { user_id: userId },
-            include: [{
-                model: Category,
-                as: 'category',
-                attributes: ['id', 'name']  // Fetching category details
-            }]
-        });
+  try {
+    let userCategories = await UserCategory.findAll({
+      where: { user_id: userId },
+      include: [
+        {
+          model: Category,
+          as: "category",
+          attributes: ["id", "name"],
+        },
+      ],
+    });
 
-        // If no categories are found, return an appropriate message
-        if (userCategories.length === 0) {
-            return res.status(404).json({ message: 'No categories found for this user' });
-        }
+    // If no categories exist, create default ones
+    if (userCategories.length === 0) {
+      const defaultCategories = [
+        { id: 1, name: "Website" },
+        { id: 2, name: "Text" },
+        { id: 3, name: "Email" },
+      ];
 
-        // Prepare the result object containing category names and their corresponding exp values
-        const categoryExps = userCategories.map(userCategory => ({
-            categoryId: userCategory.category.id,
-            categoryName: userCategory.category.name,
-            exp: userCategory.exp
-        }));
+      // Create UserCategory entries for each default category
+      const createPromises = defaultCategories.map((cat) =>
+        UserCategory.create({
+          user_id: userId,
+          category_id: cat.id,
+          exp: 0,
+        })
+      );
 
-        // Return the results as a JSON response
-        res.status(200).json(categoryExps);
+      await Promise.all(createPromises);
 
-    } catch (error) {
-        console.error('Error getting all exps:', error);
-        res.status(500).json({ message: 'Error getting all exps' });
+      // Fetch the newly created categories
+      userCategories = await UserCategory.findAll({
+        where: { user_id: userId },
+        include: [
+          {
+            model: Category,
+            as: "category",
+            attributes: ["id", "name"],
+          },
+        ],
+      });
     }
+
+    const categoryExps = userCategories.map((userCategory) => ({
+      categoryId: userCategory.category.id,
+      categoryName: userCategory.category.name,
+      exp: userCategory.exp,
+    }));
+
+    res.status(200).json(categoryExps);
+  } catch (error) {
+    console.error("Error getting all exps:", error);
+    res.status(500).json({ message: "Error getting all exps" });
+  }
 };
 
 
 // there should be middleware for submitting the response
 exports.updateCategoryExp = async (req, res) => {
-    const userId = req.userId;
-    const { categoryId } = req.params;
-    // middleware runs before this
-    // req.accuracy
+  const userId = req.userId;
+  const { categoryId } = req.params;
+  // middleware runs before this
+  // req.accuracy
 
-    try {
-
-    } catch (error) {
-        console.error('Error updating exp:', error);
-        res.status(500).json({ message: 'Error updating exp' });
-    }
-}
+  try {
+  } catch (error) {
+    console.error("Error updating exp:", error);
+    res.status(500).json({ message: "Error updating exp" });
+  }
+};

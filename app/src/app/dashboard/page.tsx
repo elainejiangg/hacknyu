@@ -3,6 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+interface CategoryExp {
+  categoryId: number;
+  categoryName: string;
+  exp: number;
+}
 
 interface ExpBarProps {
   current: number;
@@ -35,6 +42,40 @@ function ExpBar({ current, max, label, level }: ExpBarProps) {
 
 export default function Dashboard() {
   const router = useRouter();
+  const [categoryExps, setCategoryExps] = useState<CategoryExp[]>([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchExps = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/questions/exp", {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            console.log("No categories found");
+            setCategoryExps([]); // Set empty array for new users
+            return;
+          }
+          throw new Error("Failed to fetch exp data");
+        }
+
+        const data = await response.json();
+        console.log("Exp data:", data);
+        setCategoryExps(data);
+      } catch (err) {
+        setError("Failed to load stats");
+        console.error("Error fetching exps:", err);
+      }
+    };
+
+    fetchExps();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -49,6 +90,24 @@ export default function Dashboard() {
     } catch (error) {
       console.error("Logout failed:", error);
     }
+  };
+
+  // Helper function to get exp data for a category
+  const getCategoryExp = (name: string) => {
+    const categoryMap: { [key: string]: number } = {
+      website: 1,
+      sms: 2,
+      email: 3,
+    };
+
+    const category = categoryExps.find(
+      (c) => c.categoryId === categoryMap[name.toLowerCase()]
+    );
+    return {
+      current: category?.exp || 0,
+      max: 100,
+      level: Math.floor((category?.exp || 0) / 25) + 1, // Level up every 25 exp
+    };
   };
 
   return (
@@ -93,26 +152,23 @@ export default function Dashboard() {
           <Card className="h-full bg-white/5 border-white/10 p-6">
             <div className="space-y-6">
               <h2 className="text-2xl font-pixel text-center">Stats</h2>
-              <div className="space-y-4">
-                <ExpBar
-                  current={75}
-                  max={100}
-                  label="Email Detection"
-                  level={3}
-                />
-                <ExpBar
-                  current={30}
-                  max={100}
-                  label="SMS Detection"
-                  level={1}
-                />
-                <ExpBar
-                  current={50}
-                  max={100}
-                  label="Website Detection"
-                  level={2}
-                />
-              </div>
+              {error ? (
+                <div className="text-red-500 text-center font-pixel">
+                  {error}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <ExpBar
+                    {...getCategoryExp("email")}
+                    label="Email Detection"
+                  />
+                  <ExpBar {...getCategoryExp("sms")} label="SMS Detection" />
+                  <ExpBar
+                    {...getCategoryExp("website")}
+                    label="Website Detection"
+                  />
+                </div>
+              )}
             </div>
           </Card>
         </div>
