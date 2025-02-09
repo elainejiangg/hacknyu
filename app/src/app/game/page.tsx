@@ -8,11 +8,14 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 
 // Import your assets
-import fishBubble1 from "../assets/Fish_Normal_Bubble1.png";
-import fishBubble2 from "../assets/Fish_Normal_Bubble2.png";
+import fishNormalBubble1 from "../assets/Fish_Normal_Bubble1.png";
+import fishNormalBubble2 from "../assets/Fish_Normal_Bubble2.png";
+import fishAnnoyedBubble1 from "../assets/Fish_Annoyed_Bubble1.png";
+import fishAnnoyedBubble2 from "../assets/Fish_Annoyed_Bubble2.png";
 import seaBackground from "../assets/Sea_extended.png";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import HookBlack from "@/app/assets/Hook_Black.png";
 
 const DIFFICULTY = {
   EASY: { backgroundSize: "900px" },
@@ -27,10 +30,13 @@ export default function GamePage() {
   const [position, setPosition] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [currentDifficulty, setCurrentDifficulty] = useState(DIFFICULTY.MEDIUM);
+  const [hookPosition, setHookPosition] = useState(-100); // Start above screen
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentFish((prev) => (prev === 0 ? 1 : 0));
+      setCurrentFish((prev) =>
+        prev === 0 ? 1 : prev === 1 ? 2 : prev === 2 ? 3 : 0
+      );
     }, 1000);
 
     return () => clearInterval(interval);
@@ -43,6 +49,21 @@ export default function GamePage() {
         return (prev + 3) % 1000; // This creates a continuous loop without jumps
       });
     }, 50);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    // Gradually move hook down
+    const interval = setInterval(() => {
+      setHookPosition((prev) => {
+        if (prev >= 0) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev + 2; // Adjust speed by changing this number
+      });
+    }, 16); // ~60fps
 
     return () => clearInterval(interval);
   }, []);
@@ -129,23 +150,56 @@ export default function GamePage() {
               </div>
             </div>
 
-            {/* Fish animation */}
-            <div
-              className="absolute bottom-[20%] left-1/2 -translate-x-1/2 w-[33%]"
-              style={{
-                transform: `translate(-50%, ${
-                  currentFish === 1 ? "-10px" : "0px"
-                })`,
-              }}
-            >
-              <Image
-                src={currentFish === 0 ? fishBubble1 : fishBubble2}
-                alt="Fish"
-                width={0}
-                height={0}
-                className="w-full h-auto"
-                priority
-              />
+            {/* Fish and Hook container */}
+            <div className="absolute bottom-[20%] left-1/2 -translate-x-1/2 w-[33%]">
+              {/* Hook */}
+              <div
+                className="absolute left-[-75%] bottom-0 w-full transition-transform duration-300"
+                style={{
+                  transform: `translateY(${hookPosition}%)`,
+                }}
+              >
+                <Image
+                  src={HookBlack}
+                  alt="Fishing Hook"
+                  width={0}
+                  height={0}
+                  className="w-64 h-auto object-contain pixel-art"
+                  style={{
+                    imageRendering: "pixelated",
+                  }}
+                  priority
+                />
+              </div>
+
+              {/* Fish */}
+              <div
+                style={{
+                  transform: `translateY(${
+                    currentFish === 1 || currentFish === 3 ? "-10px" : "0px"
+                  })`,
+                }}
+              >
+                <Image
+                  src={
+                    currentFish === 0
+                      ? fishNormalBubble1
+                      : currentFish === 1
+                      ? fishNormalBubble2
+                      : currentFish === 2
+                      ? fishAnnoyedBubble1
+                      : fishAnnoyedBubble2
+                  }
+                  alt="Fish"
+                  width={0}
+                  height={0}
+                  className="w-full h-auto pixel-art"
+                  style={{
+                    imageRendering: "pixelated",
+                  }}
+                  priority
+                />
+              </div>
             </div>
           </Card>
         </div>
