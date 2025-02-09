@@ -37,10 +37,6 @@ module.exports = (sequelize, DataTypes) => {
 
     // Associations: A QuestionPart belongs to a Feature
     QuestionPart.associate = (models) => {
-      QuestionPart.belongsTo(models.Feature, {
-        foreignKey: 'feature_id',
-        as: 'feature'
-      });
       QuestionPart.belongsTo(models.Question, {
         foreignKey: 'question_id',
         as: 'question'
