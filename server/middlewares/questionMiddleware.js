@@ -237,37 +237,6 @@ exports.generatePhishingContent = async (req, res, next) => {
     console.log('I am here')
     next();
 
-    // Create question parts
-    // const questionParts = await Promise.all(
-    //   parsedContent.features.map(async (feature) => {
-        // First create or find the Feature record
-        // no more feature record plzzzz
-        // const [featureRecord] = await Feature.findOrCreate({
-        //   where: {
-        //     name: feature.content,
-        //     category_id: categoryId,
-        //   },
-        //   defaults: {
-        //     description: feature.reason,
-        //   },
-        // });
-
-        // Then create the QuestionPart
-    //     return await QuestionPart.create({
-    //       question_id: question.id,
-    //       content: feature.content,
-    //       is_suspicious: true,
-    //       reason: feature.reason,
-    //     });
-    //   })
-    // );
-
-    // Return both question and its parts
-    // return res.status(201).json({
-    //   category: categoryName,
-    //   question,
-    //   questionParts,
-    // });
   } catch (error) {
     console.error("Error generating phishing content:", error);
     return res.status(500).json({

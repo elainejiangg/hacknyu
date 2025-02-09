@@ -22,7 +22,7 @@ exports.flagQuestionPart = async (req, res) => {
       await questionPart.save();
 
       // Return a success response
-      return res.status(200).json({ message: 'Question part flagged successfully' });
+      return res.status(200).json({ message: 'Question part flagged successfully', questionPart: questionPart });
 
     } catch (error) {
       console.error('Error flagging question part:', error);

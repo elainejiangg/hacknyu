@@ -1,4 +1,4 @@
-const { UserCategory, Category, QuestionPart, Feature } = require('../models');
+const { UserCategory, Category, QuestionPart, Question } = require('../models');
 // const axios = require('axios');
 require("dotenv").config({ path: "../.env" });
 
@@ -39,7 +39,7 @@ exports.createQuestionWithParts = async (req, res, next) => {
         }
       }
 
-      res.status(200).json({ message: 'Phishing content stored successfully in different question parts' });
+      res.status(200).json({ message: 'Phishing content stored successfully in different question parts', questionId: questionId });
 
     } catch (error) {
       console.error('Error creating question with parts:', error);
@@ -51,31 +51,67 @@ exports.createQuestionWithParts = async (req, res, next) => {
   };
 
 
-  exports.getQuestionParts = async (req, res, next) => {
-    const { questionId } = req.params;  // Get the questionId from request parameters
+exports.getQuestionParts = async (req, res, next) => {
+const { questionId } = req.params;  // Get the questionId from request parameters
 
+try {
+    // Fetch all question parts associated with the question_id and order by 'order'
+    const questionParts = await QuestionPart.findAll({
+    where: { question_id: questionId },
+    order: [['order', 'ASC']],             // Order by the 'order' field in ascending order
+    });
+
+    if (questionParts.length === 0) {
+    return res.status(404).json({ message: 'No question parts found for this question' });
+    }
+
+    // Send the list of question parts as a response
+    return res.status(200).json({ questionParts });
+
+} catch (error) {
+    console.error('Error fetching question parts:', error);
+    return res.status(500).json({
+    message: 'Error fetching question parts',
+    error: error.message,
+    });
+}
+};
+
+
+exports.getQuestionCategoryId = async (req, res) => {
+    const { questionId } = req.params;
     try {
-      // Fetch all question parts associated with the question_id and order by 'order'
-      const questionParts = await QuestionPart.findAll({
-        where: { question_id: questionId },
-        order: [['order', 'ASC']],             // Order by the 'order' field in ascending order
+      // Find the Question entry by its ID
+      const question = await Question.findOne({
+        where: { id: questionId },
+        include: [{
+          model: UserCategory,
+          as: 'userCategory',  // Assuming 'userCategory' is the association alias in the Question model
+          attributes: ['category_id'],  // Fetch the 'category_id' from UserCategory
+        }]
       });
 
-      if (questionParts.length === 0) {
-        return res.status(404).json({ message: 'No question parts found for this question' });
+      if (!question) {
+        return res.status(404).json({ message: 'Question not found' });
       }
 
-      // Send the list of question parts as a response
-      return res.status(200).json({ questionParts });
+      console.log("question: ", question)
+
+      // Access the category_id from the associated UserCategory
+      const categoryId = question.userCategory.category_id;
+
+      // Return the category_id
+      return res.status(200).json({ categoryId: categoryId });
 
     } catch (error) {
-      console.error('Error fetching question parts:', error);
+      console.error('Error fetching question category Id:', error);
       return res.status(500).json({
-        message: 'Error fetching question parts',
+        message: 'Error fetching question category Id',
         error: error.message,
       });
     }
   };
+
 
 
 exports.getAllCategoryExps = async (req, res) => {

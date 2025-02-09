@@ -4,6 +4,7 @@ const {
   getQuestionParts,
   getAllCategoryExps,
   updateCategoryExp,
+  getQuestionCategoryId
 } = require("../controllers/questionController");
 const { isLoggedIn } = require("../middlewares/authMiddleware");
 const {
@@ -33,6 +34,9 @@ router.get(
   generatePhishingContent,
   createQuestionWithParts
 );
+
+// Get category Id associated with a question
+router.get('/:questionId/category', getQuestionCategoryId)
 
 // Get all question parts (in order) associated with a question
 router.get('/:questionId/questionParts', getQuestionParts)

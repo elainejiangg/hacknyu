@@ -5,8 +5,8 @@ const session = require("express-session");
 const passport = require("./config/passport");
 require("dotenv").config();
 const authRouter = require("./routes/authRoutes");
-// const testRouter = require("./routes/testRoutes")
 const questionRouter = require("./routes/questionRoutes");
+const answerRouter = require("./routes/answerRoutes");
 
 const app = express();
 const PORT = 3001; // Force port 3001
@@ -62,8 +62,8 @@ db.sequelize
     });
     // app.get('/generate', isLoggedIn, getRandomCategoryForUser, getRandomFeaturesForCategory)
     app.use("/auth", authRouter);
-    // app.use('/test', testRouter);
     app.use("/questions", questionRouter);
+    app.use("/answers", answerRouter);
 
     // Start the server after confirming the connection and sync
     app.listen(PORT, () => {
