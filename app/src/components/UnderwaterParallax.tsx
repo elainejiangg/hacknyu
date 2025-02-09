@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const UnderwaterParallax: React.FC = () => {
   const [scrollValue, setScrollValue] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
@@ -60,6 +62,38 @@ const UnderwaterParallax: React.FC = () => {
         <div className="vector-waves absolute top-[30vh] left-[-20%] w-[140%] z-0 overflow-hidden">
           <div
             className="wave-container overflow-hidden"
+            style={{ transform: getTransform("left", 2.5) }}
+          >
+            <svg
+              className="wave-1"
+              viewBox="0 0 4320 320"
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="none"
+            >
+              <path
+                fill="rgba(173, 216, 230, 0.2)"
+                d="M0,192 C480,192 480,100 960,100 C1440,100 1440,192 1920,192 C2400,192 2400,100 2880,100 C3360,100 3360,192 3840,192 L3840,320 L0,320 Z"
+              ></path>
+            </svg>
+          </div>
+          <div
+            className="wave-container overflow-hidden"
+            style={{ transform: getTransform("right", 2.2) }}
+          >
+            <svg
+              className="wave-2"
+              viewBox="0 0 4320 320"
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="none"
+            >
+              <path
+                fill="rgba(135, 206, 235, 0.15)"
+                d="M0,100 C480,100 480,192 960,192 C1440,192 1440,100 1920,100 C2400,100 2400,192 2880,192 C3360,192 3360,100 3840,100 L3840,320 L0,320 Z"
+              ></path>
+            </svg>
+          </div>
+          <div
+            className="wave-container overflow-hidden"
             style={{ transform: getTransform("left", 1.5) }}
           >
             <svg
@@ -69,7 +103,7 @@ const UnderwaterParallax: React.FC = () => {
               preserveAspectRatio="none"
             >
               <path
-                fill="rgba(48, 169, 239, 0.3)"
+                fill="rgba(80, 184, 244, 0.3)"
                 d="M0,192 C480,192 480,100 960,100 C1440,100 1440,192 1920,192 C2400,192 2400,100 2880,100 C3360,100 3360,192 3840,192 L3840,320 L0,320 Z"
               ></path>
             </svg>
@@ -146,7 +180,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[450vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[250vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <div className="flex flex-col gap-4">
@@ -159,7 +193,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[550vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[350vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <p className="text-2xl text-blue-200 leading-relaxed mx-10">
@@ -169,7 +203,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[650vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[450vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-4xl font-pixel text-red-400 font-bold mb-12 mx-10">
@@ -179,7 +213,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[850vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[550vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-2xl font-pixel text-white mx-10">
@@ -189,7 +223,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[950vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[650vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-2xl font-pixel text-white mx-10">
@@ -199,7 +233,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[1050vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[750vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-2xl font-pixel text-white mx-10">
@@ -209,7 +243,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[1150vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[850vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-2xl font-pixel text-white mx-10">
@@ -219,7 +253,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[1250vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel z-[9999] pointer-events-auto"
+            className="absolute top-[950vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel z-[9999] pointer-events-auto"
             style={{ transform: getVerticalTransform(1) }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -238,7 +272,7 @@ const UnderwaterParallax: React.FC = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  console.log("Button clicked!");
+                  router.push("/dashboard");
                 }}
               >
                 PLAY
