@@ -12,7 +12,7 @@ export default function LandingPage() {
       <div className="relative container max-w-4xl mx-auto min-h-screen flex flex-col items-center justify-center gap-8">
         <div className="text-center space-y-6">
           <h1 className="text-4xl font-pixel pixel-corners bg-white/5 px-8 py-4 inline-block">
-            PHISHING SIMULATOR
+            PHABULOUS PHISHES
           </h1>
           <p className="text-lg font-pixel text-white/80 max-w-xl mx-auto">
             Navigate the digital waters, avoid the hooks, and become a master at
