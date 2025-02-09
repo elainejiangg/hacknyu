@@ -38,6 +38,37 @@ export default function GamePage() {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const questionGenerated = useRef(false);
   const [loadingFish, setLoadingFish] = useState(0);
+  const [currentTip, setCurrentTip] = useState(0);
+  const [shuffledTips, setShuffledTips] = useState<string[]>([]);
+  const [showTips, setShowTips] = useState(false);
+
+  const tips = [
+    "Check the sender's email address carefully.",
+    "Hover over links before clicking them.",
+    "Be wary of urgent or threatening messages.",
+    "If something seems too good to be true, it probably is.",
+    "Never share your password or personal info.",
+    "Look for spelling and grammar mistakes.",
+    "Don't click on unexpected attachments.",
+    "Check for generic greetings like 'Dear Sir/Madam'.",
+    "Be suspicious of requests for gift cards.",
+    "Government agencies won't ask for sensitive info via email.",
+    "Banks never ask for your password via email.",
+    "Check the URL carefully for misspellings.",
+    "Don't trust unexpected prize notifications.",
+    "Be careful with 'account verification' requests.",
+    "Watch out for pressure tactics and urgency.",
+    "Legitimate companies have proper domain emails.",
+    "Be cautious of requests to update payment info.",
+    "Check for poor formatting and design.",
+    "Verify unexpected requests through official channels.",
+    "Don't trust emails asking to verify your identity.",
+  ];
+
+  // Shuffle tips when component mounts
+  useEffect(() => {
+    setShuffledTips([...tips].sort(() => Math.random() - 0.5));
+  }, []);
 
   // generate Question
   useEffect(() => {
@@ -161,11 +192,29 @@ export default function GamePage() {
     return () => clearInterval(interval);
   }, []);
 
+  // Add tip cycling after 2 seconds
+  useEffect(() => {
+    const showTipsTimeout = setTimeout(() => {
+      setShowTips(true);
+    }, 2000);
+
+    const tipInterval = setInterval(() => {
+      if (showTips) {
+        setCurrentTip((prev) => (prev + 1) % shuffledTips.length);
+      }
+    }, 4000);
+
+    return () => {
+      clearTimeout(showTipsTimeout);
+      clearInterval(tipInterval);
+    };
+  }, [showTips, shuffledTips.length]);
+
   // Show loading state while fetching
   if (isLoading) {
     return (
       <div className="fixed inset-0 bg-black text-white flex items-center justify-center">
-        <div className="text-center">
+        <div className="text-center relative h-48">
           <div className="w-32 h-32 mx-auto mb-4">
             <Image
               src={
@@ -191,10 +240,14 @@ export default function GamePage() {
               priority
             />
           </div>
-          <p className="font-pixel">Loading challenge...</p>
-          <p className="font-pixel">
-            We are working hard to personalize your experience!
+          <p className="font-pixel absolute top-[75%] left-1/2 -translate-x-1/2 whitespace-nowrap">
+            Loading challenge...
           </p>
+          {showTips && (
+            <p className="font-pixel absolute top-[90%] left-1/2 -translate-x-1/2 whitespace-nowrap text-white/50">
+              Tip: {shuffledTips[currentTip]}
+            </p>
+          )}
         </div>
       </div>
     );
