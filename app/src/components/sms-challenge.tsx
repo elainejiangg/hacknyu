@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageBubble } from "@/components/message-bubble";
+import { SMSViewer } from "@/components/sms-viewer";
 import { ChallengeBase } from "@/components/challenge-base";
 import { useSelectionState } from "@/hooks/useSelectionState";
 
@@ -13,9 +13,9 @@ export function SMSChallenge() {
       selectedElements={selectedElements}
       onSelect={handleSelect}
     >
-      <MessageBubble
+      <SMSViewer
         sender="+1 (555) 0123"
-        messageParts={[
+        message={[
           "ALERT: ",
           "Your bank account has been temporarily suspended. ",
           "Urgent action required! ",

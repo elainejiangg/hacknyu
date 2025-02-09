@@ -5,7 +5,7 @@ import { Selection } from "@/types/challenge";
 
 interface MessageBubbleProps {
   sender: string;
-  messageParts: string[];
+  message: string[]; // array of strings for each sentence of the message
   onSelect: (selection: Selection) => void;
   selectedElements: Selection[];
 }
@@ -17,9 +17,9 @@ function generateRandomTimestamp() {
   return `Today ${hours}:${minutes.toString().padStart(2, "0")} ${ampm}`;
 }
 
-export function MessageBubble({
+export function SMSViewer({
   sender,
-  messageParts,
+  message,
   onSelect,
   selectedElements,
 }: MessageBubbleProps) {
@@ -45,7 +45,7 @@ export function MessageBubble({
     console.log("Clicked message part:", {
       type: "message",
       index,
-      text: messageParts[index],
+      text: message[index],
     });
     if (isSelected("message", index)) {
       onSelect({ type: "message", index }); // Will be removed in parent
@@ -78,7 +78,7 @@ export function MessageBubble({
       <div className="flex justify-start">
         <div className="bg-white/10 rounded-3xl rounded-tl-sm px-6 py-4 max-w-[90%]">
           <p className="text-white font-pixel text-lg leading-relaxed">
-            {messageParts.map((part, index) => (
+            {message.map((part, index) => (
               <span
                 key={index}
                 className={`cursor-pointer transition-colors rounded px-0.5
