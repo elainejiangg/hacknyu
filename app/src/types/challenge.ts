@@ -9,6 +9,7 @@ export type Selection = {
     | "button"
     | "footer"
     | "message"
+    | "content"
     | "url";
   index: number;
 };

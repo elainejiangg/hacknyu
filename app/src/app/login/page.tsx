@@ -2,8 +2,29 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useState } from "react";
 
 export default function LoginPage() {
+  const [error, setError] = useState("");
+  const [loginData, setLoginData] = useState({
+    identifier: "", // for either username or email
+    password: "",
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!loginData.identifier) {
+      setError("Please enter your username or email");
+      return;
+    }
+    if (!loginData.password) {
+      setError("Password is required");
+      return;
+    }
+    setError("");
+    // Handle login logic here
+  };
+
   return (
     <div className="min-h-screen bg-black p-6 text-white">
       {/* Grid background overlay */}
@@ -15,14 +36,24 @@ export default function LoginPage() {
             WELCOME BACK
           </h1>
 
-          <form className="space-y-4">
+          {error && (
+            <div className="text-red-400 text-sm font-pixel text-center">
+              {error}
+            </div>
+          )}
+
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="space-y-2">
-              <label className="text-sm font-pixel" htmlFor="email">
-                EMAIL
+              <label className="text-sm font-pixel" htmlFor="identifier">
+                USERNAME/EMAIL
               </label>
               <input
-                id="email"
-                type="email"
+                id="identifier"
+                type="text"
+                value={loginData.identifier}
+                onChange={(e) =>
+                  setLoginData({ ...loginData, identifier: e.target.value })
+                }
                 className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg font-pixel text-white focus:outline-none focus:border-white/40"
               />
             </div>
@@ -34,6 +65,10 @@ export default function LoginPage() {
               <input
                 id="password"
                 type="password"
+                value={loginData.password}
+                onChange={(e) =>
+                  setLoginData({ ...loginData, password: e.target.value })
+                }
                 className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg font-pixel text-white focus:outline-none focus:border-white/40"
               />
             </div>

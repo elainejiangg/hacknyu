@@ -20,11 +20,13 @@ export function ChallengeBase({
   onSelect,
 }: ChallengeProps) {
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col h-full space-y-4 overflow-hidden">
       <h2 className="text-xl font-pixel">{title}</h2>
-      <div className="prose prose-invert">
-        <p className="font-pixel text-lg mb-6">{instruction}</p>
-        <div className="mt-8 mb-8">{children}</div>
+      <p className="font-pixel text-lg mb-4">{instruction}</p>
+      <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="h-full overflow-y-auto -webkit-overflow-scrolling">
+          {children}
+        </div>
       </div>
     </div>
   );
