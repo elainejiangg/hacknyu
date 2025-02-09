@@ -2,8 +2,57 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    console.log("Sending data:", formData);
+
+    try {
+      const response = await fetch("http://localhost:3001/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+        credentials: "include", // Important for cookies
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Registration failed");
+      }
+
+      // Registration successful
+      router.push("/login");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-black p-6 text-white">
       {/* Grid background overlay */}
@@ -15,7 +64,13 @@ export default function SignUpPage() {
             JOIN THE SCHOOL
           </h1>
 
-          <form className="space-y-4">
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-500 px-4 py-2 rounded">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-pixel" htmlFor="username">
                 USERNAME
@@ -23,7 +78,10 @@ export default function SignUpPage() {
               <input
                 id="username"
                 type="text"
+                value={formData.username}
+                onChange={handleChange}
                 className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg font-pixel text-white focus:outline-none focus:border-white/40"
+                required
               />
             </div>
 
@@ -34,7 +92,10 @@ export default function SignUpPage() {
               <input
                 id="email"
                 type="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg font-pixel text-white focus:outline-none focus:border-white/40"
+                required
               />
             </div>
 
@@ -45,15 +106,19 @@ export default function SignUpPage() {
               <input
                 id="password"
                 type="password"
+                value={formData.password}
+                onChange={handleChange}
                 className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg font-pixel text-white focus:outline-none focus:border-white/40"
+                required
               />
             </div>
 
             <Button
               className="w-full font-pixel py-6 bg-white/10 hover:bg-white/20 border-white/20 mt-6"
               type="submit"
+              disabled={loading}
             >
-              CREATE ACCOUNT
+              {loading ? "CREATING ACCOUNT..." : "CREATE ACCOUNT"}
             </Button>
           </form>
 
