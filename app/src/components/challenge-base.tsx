@@ -3,6 +3,7 @@
 // import { ReactNode } from "react";
 // import { Card } from "@/components/ui/card";
 // import { Selection } from "@/types/challenge";
+// import axios from "axios";
 
 // interface ChallengeProps {
 //   title?: string;
@@ -23,12 +24,27 @@
 // }: ChallengeProps) {
 //   const handleSelect = (selection: Selection) => {
 //     if (
-//       selection.type !== "submit" &&
+//       // selection.type !== "submit" &&
 //       selectedElements.length >= possibleRedFlags
 //     ) {
 //       return; // Prevent selecting more elements than possible flags
 //     }
 //     onSelect(selection);
+//   };
+
+//   // Handle the submit action
+//   const handleSubmit = async () => {
+//     try {
+//       // Call the score endpoint to update the score
+//       const response = await axios.put(`http://localhost:3001/answers/score`, {
+//         // Pass any necessary data here if required by the API
+//       });
+
+//       console.log("Score updated:", response.data);
+//       // Optionally handle success (e.g., show a success message or redirect)
+//     } catch (error) {
+//       console.error("Error submitting the answer:", error);
+//     }
 //   };
 
 //   return (
@@ -38,7 +54,10 @@
 //           <h2 className="text-xl font-pixel">{title}</h2>
 //           <button
 //             className="px-4 py-2 border border-white/40 text-white rounded font-pixel hover:bg-white/20 transition-colors"
-//             onClick={() => handleSelect({ type: "submit" })}
+//             onClick={() => {
+//               handleSelect({ type: "submit" });
+//               handleSubmit(); // Trigger the submit action when user clicks submit
+//             }}
 //           >
 //             Submit
 //           </button>
@@ -109,6 +128,11 @@ export function ChallengeBase({
     }
   };
 
+  // Handle the next question action (refresh the page)
+  const handleNextQuestion = () => {
+    window.location.reload();
+  };
+
   return (
     <div className="flex flex-col h-full space-y-4 overflow-hidden">
       <div className="flex flex-col space-y-2">
@@ -136,6 +160,14 @@ export function ChallengeBase({
         <div className="h-full overflow-y-auto -webkit-overflow-scrolling">
           {children}
         </div>
+      </div>
+      <div className="flex justify-between mt-4">
+        <button
+          className="px-4 py-2 border border-white/40 text-white rounded font-pixel hover:bg-white/20 transition-colors"
+          onClick={handleNextQuestion} // Trigger page refresh on click
+        >
+          Next Question
+        </button>
       </div>
     </div>
   );
