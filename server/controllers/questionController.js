@@ -17,6 +17,7 @@ exports.createQuestionWithParts = async (req, res, next) => {
           reason: content.reason,
           user_answered_suspicious: false,
           order: order,
+          question_part_content: content.text,
         });
       };
 

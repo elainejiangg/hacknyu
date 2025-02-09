@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowedNull: false,
       },
+      question_part_content: {
+        type: DataTypes.STRING,
+        allowedNull: false,
+      },
       is_suspicious: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
