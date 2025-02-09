@@ -51,6 +51,33 @@ exports.createQuestionWithParts = async (req, res, next) => {
   };
 
 
+  exports.getQuestionParts = async (req, res, next) => {
+    const { questionId } = req.params;  // Get the questionId from request parameters
+
+    try {
+      // Fetch all question parts associated with the question_id and order by 'order'
+      const questionParts = await QuestionPart.findAll({
+        where: { question_id: questionId },
+        order: [['order', 'ASC']],             // Order by the 'order' field in ascending order
+      });
+
+      if (questionParts.length === 0) {
+        return res.status(404).json({ message: 'No question parts found for this question' });
+      }
+
+      // Send the list of question parts as a response
+      return res.status(200).json({ questionParts });
+
+    } catch (error) {
+      console.error('Error fetching question parts:', error);
+      return res.status(500).json({
+        message: 'Error fetching question parts',
+        error: error.message,
+      });
+    }
+  };
+
+
 exports.getAllCategoryExps = async (req, res) => {
   const userId = req.userId;
 

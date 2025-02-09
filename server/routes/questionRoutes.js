@@ -1,6 +1,7 @@
 const express = require("express");
 const {
   createQuestionWithParts,
+  getQuestionParts,
   getAllCategoryExps,
   updateCategoryExp,
 } = require("../controllers/questionController");
@@ -32,6 +33,9 @@ router.get(
   generatePhishingContent,
   createQuestionWithParts
 );
+
+// Get all question parts (in order) associated with a question
+router.get('/:questionId/questionParts', getQuestionParts)
 
 // Get all category exps for a user to display on their dashboard
 router.get("/exp", isLoggedIn, getAllCategoryExps);
