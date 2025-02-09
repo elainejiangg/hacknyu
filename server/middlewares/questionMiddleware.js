@@ -81,6 +81,7 @@ exports.getRandomCategoryForUser = async (req, res, next) => {
 };
 
 exports.getRandomFeaturesForCategory = async (req, res, next) => {
+  console.log("i am in getRandomFeaturesForCategory");
   try {
     console.log("Selected Category ID:", req.selectedCategoryId);
 
@@ -123,7 +124,7 @@ exports.getRandomFeaturesForCategory = async (req, res, next) => {
         (feature) => feature.name
       ),
     };
-    console.log("req.features: ", req.features);
+    console.log("req.features in getRandomFeaturesForCategory: ", req.features);
 
     next(); // Pass control to the next middleware or route handler
   } catch (error) {
@@ -158,6 +159,15 @@ exports.generatePhishingContent = async (req, res, next) => {
     console.log("Category found:", categoryName);
 
     // Extract selected and unselected features
+    console.log("req.features in generatePhishingContent: ", req.features);
+    console.log(
+      "req.features.selected_feature_names: ",
+      req.features.selected_feature_names
+    );
+    console.log(
+      "req.features.non_selected_feature_names: ",
+      req.features.non_selected_feature_names
+    );
     const selectedFeatures = req.features.selected_feature_names;
     const unselectedFeatures = req.features.non_selected_feature_names;
 
@@ -185,13 +195,14 @@ exports.generatePhishingContent = async (req, res, next) => {
       ]
     }
 
+    Ensure that the features in ${JSON.stringify(
+      selectedFeatures
+    )} are highly suspicious and provide explanations for why they are suspicious.
+    Those in ${JSON.stringify(unselectedFeatures)} should be completely normal.
+    The message should sound natural while aligning with these requirements.
 
     Each feature should identify a different suspicious element (like urgency, generic greeting, poor grammar, suspicious links, etc).
     The response must be valid JSON. Do not include any text outside the JSON object.`;
-
-    // Ensure that the features in ${JSON.stringify(selectedFeatures)} are highly suspicious and provide explanations for why they are suspicious.
-    // Those in ${JSON.stringify(unselectedFeatures)} should be completely normal.
-    // The message should sound natural while aligning with these requirements.
 
     // Send request to OpenAI API
     const response = await fetch("https://api.openai.com/v1/chat/completions", {

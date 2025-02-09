@@ -7,17 +7,29 @@ const {
 const { isLoggedIn } = require("../middlewares/authMiddleware");
 const {
   getRandomCategoryForUser,
-  generatePhishingContent,
   getRandomFeaturesForCategory,
+  generatePhishingContent,
 } = require("../middlewares/questionMiddleware");
 const router = express.Router();
 
 router.get(
   "/generate-question",
   isLoggedIn,
-  getRandomCategoryForUser,
-  generatePhishingContent,
-  getRandomFeaturesForCategory
+  async (req, res, next) => {
+    try {
+      await getRandomCategoryForUser(req, res, next);
+    } catch (error) {
+      next(error);
+    }
+  },
+  async (req, res, next) => {
+    try {
+      await getRandomFeaturesForCategory(req, res, next);
+    } catch (error) {
+      next(error);
+    }
+  },
+  generatePhishingContent
 );
 
 // Get all category exps for a user to display on their dashboard
