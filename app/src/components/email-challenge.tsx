@@ -49,6 +49,7 @@ export function EmailChallenge({
         }) => part["question_part_content"]
       )
       .filter(Boolean),
+    numRedFlags: parts.filter((part) => part.is_suspicious).length,
   };
 
   return (
@@ -56,6 +57,7 @@ export function EmailChallenge({
       instruction="Click on any suspicious elements in this email:"
       selectedElements={selectedElements}
       onSelect={handleSelect}
+      possibleRedFlags={challengeData.numRedFlags}
     >
       <EmailViewer
         sender={challengeData.sender}
