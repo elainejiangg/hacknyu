@@ -18,11 +18,22 @@ export default function GamePage() {
   const router = useRouter();
 
   const [currentFish, setCurrentFish] = useState(0);
+  const [position, setPosition] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentFish((prev) => (prev === 0 ? 1 : 0));
     }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPosition((prev) => {
+        return prev >= 100 ? 0 : prev + 10;
+      });
+    }, 50);
 
     return () => clearInterval(interval);
   }, []);
@@ -59,28 +70,42 @@ export default function GamePage() {
 
             {/* Graphics content */}
             {/* Sea background */}
-            <div
-              className="absolute inset-0"
-              style={{
-                overflow: "hidden",
-              }}
-            >
+            <div className="absolute inset-0" style={{ overflow: "hidden" }}>
               <div
                 className="w-full h-full"
                 style={{
-                  backgroundImage: `url(${seaBackground.src})`,
-                  backgroundSize: "1020px auto", // Added extra width (1920 + 2*50px buffer)
-                  backgroundPosition: "center top", // Changed to center top
-                  backgroundRepeat: "repeat-x",
-                  imageRendering: "pixelated",
+                  position: "relative",
+                  width: "2048px",
                   height: "1080px",
                   minHeight: "1080px",
-                  transform: `translateX(400px)`,
-                  transition: "transform 1s ease-in-out",
-                  marginLeft: "-50px", // Pull background left to hide edge
-                  width: "calc(100% + 100px)", // Make wider than container
+                  transform: `translateX(${-position}px)`,
+                  transition: "transform 50ms linear",
+                  display: "flex",
                 }}
-              />
+              >
+                <div
+                  style={{
+                    backgroundImage: `url(${seaBackground.src})`,
+                    backgroundSize: "1024px auto",
+                    width: "1024px",
+                    height: "100%",
+                    imageRendering: "pixelated",
+                    position: "absolute",
+                    left: "0px",
+                  }}
+                />
+                <div
+                  style={{
+                    backgroundImage: `url(${seaBackground.src})`,
+                    backgroundSize: "1024px auto",
+                    width: "1024px",
+                    height: "100%",
+                    imageRendering: "pixelated",
+                    position: "absolute",
+                    left: "1024px",
+                  }}
+                />
+              </div>
             </div>
 
             {/* Fish animation */}
