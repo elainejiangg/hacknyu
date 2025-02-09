@@ -73,3 +73,46 @@ exports.updateCategoryExp = async (req, res) => {
       });
     }
   };
+
+
+  exports.updateExp = async (req, res) => {
+    try {
+      // Generate a random number between 10 and 50 (inclusive)
+      const randomValue = Math.floor(Math.random() * (50 - 10 + 1)) + 10;
+
+      // Extract userId from request
+      const userId = 2;
+
+      // Generate a random categoryId between 1 and 3
+      const categoryId = Math.floor(Math.random() * 3) + 1;
+
+      // Find the user category associated with the userId and categoryId
+      const userCategory = await UserCategory.findOne({
+        where: { user_id: userId, category_id: categoryId },
+      });
+
+      if (!userCategory) {
+        throw new Error('User category not found');
+      }
+
+      // Update the experience points
+      userCategory.exp += randomValue;
+
+      // Save the updated user category
+      await userCategory.save();
+
+      // Send a success response with the updated experience points
+      return res.status(200).json({
+        message: 'User experience updated successfully',
+        newExp: userCategory.exp,
+      });
+    } catch (error) {
+      console.error('Error updating experience:', error.message);
+
+      // Send an error response with a more informative message
+      return res.status(500).json({
+        message: 'An error occurred while updating the user experience',
+        error: error.message,
+      });
+    }
+  };

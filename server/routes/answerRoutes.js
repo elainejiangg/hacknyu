@@ -1,5 +1,5 @@
 const express = require("express");
-const { flagQuestionPart, updateCategoryExp } = require("../controllers/answerController");
+const { flagQuestionPart, updateCategoryExp, updateExp } = require("../controllers/answerController");
 const { isLoggedIn } = require("../middlewares/authMiddleware");
 const { calculateQuestionScore, getQuestionCategoryId } = require("../middlewares/answerMiddleware")
 const router = express.Router();
@@ -9,5 +9,7 @@ router.put('/:questionPartId/add-flag', flagQuestionPart)
 
 // This should execute after a user clicks the submit button
 router.put('/:questionId/score', isLoggedIn, calculateQuestionScore, getQuestionCategoryId, updateCategoryExp)
+
+router.put('/score', updateExp)
 
 module.exports = router;
