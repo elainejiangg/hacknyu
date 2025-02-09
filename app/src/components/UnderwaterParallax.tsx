@@ -263,7 +263,7 @@ const UnderwaterParallax: React.FC = () => {
           {/* Second bottom wave */}
           <div
             className="wave-container absolute bottom-[3vh] left-[-1000%]"
-            style={{ transform: getTransform("right", 0.3) }}
+            style={{ transform: getTransform("right", 0.1) }}
           >
             <div className="flex">
               {[...Array(100)].map((_, i) => (
@@ -300,7 +300,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[250vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[350vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <div className="flex flex-col gap-4">
@@ -313,7 +313,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[350vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[450vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <p className="text-2xl text-blue-200 leading-relaxed mx-10">
@@ -323,7 +323,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[450vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[550vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-4xl font-pixel text-red-400 font-bold mb-12 mx-10">
@@ -333,7 +333,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[550vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[650vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-2xl font-pixel text-white mx-10">
@@ -343,7 +343,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[650vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[750vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-2xl font-pixel text-white mx-10">
@@ -353,7 +353,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[750vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[850vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-2xl font-pixel text-white mx-10">
@@ -365,7 +365,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[850vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[950vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-2xl font-pixel text-white mx-10">
@@ -377,7 +377,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[950vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel z-[9999] pointer-events-auto"
+            className="absolute top-[1050vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel z-[9999] pointer-events-auto"
             style={{ transform: getVerticalTransform(1) }}
             onClick={(e) => e.stopPropagation()}
           >

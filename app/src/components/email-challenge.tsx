@@ -12,24 +12,39 @@ function generateRandomTimestamp() {
   return `Today ${hours}:${minutes.toString().padStart(2, "0")} ${ampm}`;
 }
 
-export function EmailChallenge({
-  parts,
-}: {
-  questionId: number;
+interface EmailChallengeProps {
   parts: {
     id: number;
     question_id: number;
     order: number;
     question_part_content: string;
     is_suspicious: boolean;
+    user_answered_suspicious: boolean;
   }[];
-}) {
+}
+
+export function EmailChallenge({ parts }: EmailChallengeProps) {
   const { selectedElements, handleSelect, isSelected } = useSelectionState();
   const [timestamp, setTimestamp] = useState("Today --:-- --");
+  const [numCorrectAnswers, setNumCorrectAnswers] = useState(0);
+
+  // Map parts to their order for frontend indexing
+  const partsMap = parts.reduce((acc, part) => {
+    acc[part.order] = part;
+    return acc;
+  }, {} as Record<number, (typeof parts)[0]>);
 
   useEffect(() => {
     setTimestamp(generateRandomTimestamp());
   }, []);
+
+  // Calculate total number of suspicious elements
+  useEffect(() => {
+    const totalSuspiciousCount = parts.filter(
+      (part) => part.is_suspicious
+    ).length;
+    setNumCorrectAnswers(totalSuspiciousCount); // Set this as the total possible flags
+  }, [parts]);
 
   const challengeData = {
     subject:
@@ -57,17 +72,17 @@ export function EmailChallenge({
       instruction="Click on any suspicious elements in this email:"
       selectedElements={selectedElements}
       onSelect={handleSelect}
-      possibleRedFlags={challengeData.numRedFlags}
+      possibleRedFlags={numCorrectAnswers} // This should now show the correct total
+      parts={parts}
     >
       <EmailViewer
-        sender={challengeData.sender}
         subject={challengeData.subject}
-        timestamp={challengeData.timestamp}
+        sender={challengeData.sender}
         body={challengeData.body}
-        attachments={challengeData.attachments}
+        attachment={challengeData.attachments[0]}
         onSelect={handleSelect}
         isSelected={isSelected}
-        parts={parts} // Pass parts to map to id in EmailViewer
+        parts={parts}
       />
     </ChallengeBase>
   );

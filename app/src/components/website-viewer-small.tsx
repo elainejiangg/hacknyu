@@ -103,15 +103,20 @@ import { Selection } from "@/types/challenge";
 import axios from "axios";
 
 interface WebsiteViewerSmallProps {
+  url: string;
+  title: string;
   parts: {
     id: number;
     question_part_content: string;
+    is_suspicious: boolean;
   }[];
   onSelect: (selection: Selection) => void;
   isSelected: (type: Selection["type"], index: number) => boolean;
 }
 
 export function WebsiteViewerSmall({
+  url,
+  title,
   parts,
   onSelect,
   isSelected,

@@ -198,8 +198,9 @@ export default function Dashboard() {
                   transition-all duration-300 ease-in-out
                   cursor-pointer bg-transparent
                   hover:bg-transparent focus:bg-transparent active:bg-transparent"
+                onClick={() => router.push("/tutorial")}
               >
-                Settings
+                Tutorial
               </Button>
               <Button
                 className="font-pixel text-white/75 text-sm
