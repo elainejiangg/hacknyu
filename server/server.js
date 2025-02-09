@@ -4,6 +4,11 @@ const session = require('express-session')
 const passport = require('./config/passport')
 require('dotenv').config()
 const authRouter = require("./routes/authRoutes");
+// const testRouter = require("./routes/testRoutes")
+const questionRouter = require("./routes/questionRoutes")
+
+const { getRandomCategoryForUser, getRandomFeaturesForCategory } = require('./middlewares/questionMiddleware')
+const { isLoggedIn } = require('./middlewares/authMiddleware')
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -43,7 +48,13 @@ db.sequelize.authenticate()
     console.log('Models synced successfully.');
 
     // Register routes (uncomment and add your routes here)
+    app.get('/', async (req, res) => {
+      res.send('hello world')
+    })
+    app.get('/generate', isLoggedIn, getRandomCategoryForUser, getRandomFeaturesForCategory)
     app.use('/auth', authRouter);
+    // app.use('/test', testRouter);
+    // app.use('/questions', questionRouter)
 
     // Start the server after confirming the connection and sync
     app.listen(PORT, () => {
