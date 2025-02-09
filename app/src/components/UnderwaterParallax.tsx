@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import BigWave from "@/app/assets/Big_Wave.png";
+import SmallWave from "@/app/assets/Small_Wave.png";
+import Fish from "@/app/assets/Fish_Normal_Bubble1.png";
+
+declare global {
+  interface ElementEventMap {
+    wheel: WheelEvent;
+  }
+}
 
 const UnderwaterParallax: React.FC = () => {
   const [scrollValue, setScrollValue] = useState(0);
@@ -18,7 +27,7 @@ const UnderwaterParallax: React.FC = () => {
 
     const element = document.querySelector(".scroll-container");
     if (element) {
-      const options = { passive: false };
+      const options: AddEventListenerOptions = { passive: false };
       element.addEventListener("wheel", handleWheel as EventListener, options);
 
       return () => {
@@ -47,10 +56,40 @@ const UnderwaterParallax: React.FC = () => {
     const transitionProgress = Math.min(scrollValue / 500, 1);
     return {
       background: `linear-gradient(to bottom,
-        rgb(0, 77, 122) ${20 - transitionProgress * 20}%,
-        rgb(0, 36, 56) ${60 - transitionProgress * 60}%,
+        rgb(255, 255, 255) ${10 - transitionProgress * 10}%,
+        rgb(180, 180, 180) ${40 - transitionProgress * 40}%,
+        rgb(100, 100, 100) ${70 - transitionProgress * 70}%,
         #000000 ${100 - transitionProgress * 100}%)`,
     };
+  };
+
+  const getFishTransform = () => {
+    // Calculate fish position based on scroll progress (0 to 2000)
+    const progress = (scrollValue / 2000) * 120;
+    return `translateX(${100 - progress}%)`;
+  };
+
+  const getSecondFishTransform = () => {
+    // Slightly different speed for the second fish
+    const progress = (scrollValue / 2000) * 150; // Different multiplier for varied speed
+    return `translateX(${150 - progress}%)`;
+  };
+
+  const getTopFishTransform = () => {
+    // Moving right instead of left
+    const progress = (scrollValue / 2000) * 70;
+    return `translateX(${-100 + progress}%) scaleX(-1)`; // Start at -30% (off-screen left)
+  };
+
+  const getBottomWavesOpacity = () => {
+    // Start fade in earlier (around -50 scroll value) and complete by 100
+    const fadeStart = 0; // Changed to negative value to start before scroll
+    const fadeEnd = 100; // Changed from 200 to 100
+    const opacity = Math.max(
+      0,
+      Math.min(1, (scrollValue - fadeStart) / (fadeEnd - fadeStart))
+    );
+    return opacity;
   };
 
   return (
@@ -59,109 +98,190 @@ const UnderwaterParallax: React.FC = () => {
         className="h-full w-full overflow-hidden"
         style={getBackgroundStyle()}
       >
-        <div className="vector-waves absolute top-[30vh] left-[-20%] w-[140%] z-0 overflow-hidden">
+        {/* Top fish moving right */}
+        {/* <div
+          className="absolute top-[15vh] w-full z-10 animate-swim-medium"
+          style={{
+            transform: getTopFishTransform(),
+          }}
+        >
+          <img
+            src={Fish.src}
+            alt="Swimming Fish"
+            className="w-20 h-20 object-contain opacity-40"
+          />
+        </div> */}
+
+        {/* First bottom fish */}
+        <div
+          className="absolute bottom-[7vh] w-full z-10 animate-swim"
+          style={{
+            transform: getFishTransform(),
+          }}
+        >
+          <img
+            src={Fish.src}
+            alt="Swimming Fish"
+            className="w-20 h-20 object-contain opacity-50" // Added opacity
+          />
+        </div>
+
+        {/* Second fish */}
+        <div
+          className="absolute bottom-[2vh] w-full z-10 animate-swim-slow" // Different animation and position
+          style={{
+            transform: getSecondFishTransform(),
+          }}
+        >
+          <img
+            src={Fish.src}
+            alt="Swimming Fish"
+            className="w-20 h-20 object-contain opacity-30" // Lower opacity
+          />
+        </div>
+
+        <div className="vector-waves absolute top-[20vh] left-[-20%] w-[140%] z-0">
+          {/* First layer - fastest moving */}
           <div
-            className="wave-container overflow-hidden"
+            className="wave-container"
             style={{ transform: getTransform("left", 2.5) }}
           >
-            <svg
-              className="wave-1"
-              viewBox="0 0 4320 320"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="none"
-            >
-              <path
-                fill="rgba(173, 216, 230, 0.2)"
-                d="M0,192 C480,192 480,100 960,100 C1440,100 1440,192 1920,192 C2400,192 2400,100 2880,100 C3360,100 3360,192 3840,192 L3840,320 L0,320 Z"
-              ></path>
-            </svg>
+            <div className="flex">
+              {[...Array(20)].map((_, i) => (
+                <img
+                  key={i}
+                  src={SmallWave.src}
+                  alt="Small Wave"
+                  className="w-[20%] h-20 object-contain opacity-20"
+                />
+              ))}
+            </div>
           </div>
           <div
-            className="wave-container overflow-hidden"
+            className="wave-container"
             style={{ transform: getTransform("right", 2.2) }}
           >
-            <svg
-              className="wave-2"
-              viewBox="0 0 4320 320"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="none"
-            >
-              <path
-                fill="rgba(135, 206, 235, 0.15)"
-                d="M0,100 C480,100 480,192 960,192 C1440,192 1440,100 1920,100 C2400,100 2400,192 2880,192 C3360,192 3360,100 3840,100 L3840,320 L0,320 Z"
-              ></path>
-            </svg>
+            {/* <div className="flex">
+              {[...Array(30)].map((_, i) => (
+                <img
+                  key={i}
+                  src={SmallWave.src}
+                  alt="Small Wave"
+                  className="w-[20%] h-16 object-contain opacity-15"
+                />
+              ))}
+            </div> */}
           </div>
+
+          {/* Second layer - medium speed */}
           <div
-            className="wave-container overflow-hidden"
+            className="wave-container"
             style={{ transform: getTransform("left", 1.5) }}
           >
-            <svg
-              className="wave-1"
-              viewBox="0 0 4320 320"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="none"
-            >
-              <path
-                fill="rgba(80, 184, 244, 0.3)"
-                d="M0,192 C480,192 480,100 960,100 C1440,100 1440,192 1920,192 C2400,192 2400,100 2880,100 C3360,100 3360,192 3840,192 L3840,320 L0,320 Z"
-              ></path>
-            </svg>
+            <div className="flex">
+              {[...Array(8)].map((_, i) => (
+                <img
+                  key={i}
+                  src={BigWave.src}
+                  alt="Big Wave"
+                  className="w-[20%] h-24 object-contain opacity-30"
+                />
+              ))}
+            </div>
           </div>
           <div
-            className="wave-container overflow-hidden"
-            style={{ transform: getTransform("right", 1.2) }}
+            className="wave-container"
+            style={{ transform: getTransform("right", 0.3) }}
           >
-            <svg
-              className="wave-2"
-              viewBox="0 0 4320 320"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="none"
-            >
-              <path
-                fill="rgba(42, 145, 205, 0.3)"
-                d="M0,100 C480,100 480,192 960,192 C1440,192 1440,100 1920,100 C2400,100 2400,192 2880,192 C3360,192 3360,100 3840,100 L3840,320 L0,320 Z"
-              ></path>
-            </svg>
+            <div className="flex">
+              {[...Array(15)].map((_, i) => (
+                <img
+                  key={i}
+                  src={SmallWave.src}
+                  alt="Small Wave"
+                  className="w-[20%] h-20 object-contain opacity-30"
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Third layer - slowest moving */}
+          <div
+            className="wave-container"
+            style={{ transform: getTransform("left", 1) }}
+          >
+            <div className="flex">
+              {[...Array(25)].map((_, i) => (
+                <img
+                  key={i}
+                  src={BigWave.src}
+                  alt="Big Wave"
+                  className="w-[20%] h-28 object-contain opacity-30"
+                />
+              ))}
+            </div>
           </div>
           <div
-            className="wave-container overflow-hidden"
-            style={{ transform: getTransform("left", 2) }}
+            className="wave-container"
+            style={{ transform: getTransform("right", 0.8) }}
           >
-            <svg
-              className="wave-1"
-              viewBox="0 0 4320 320"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="none"
-            >
-              <path
-                fill="rgba(3, 125, 196, 0.3)"
-                d="M0,192 C480,192 480,100 960,100 C1440,100 1440,192 1920,192 C2400,192 2400,100 2880,100 C3360,100 3360,192 3840,192 L3840,320 L0,320 Z"
-              ></path>
-            </svg>
+            <div className="flex">
+              {[...Array(5)].map((_, i) => (
+                <img
+                  key={i}
+                  src={SmallWave.src}
+                  alt="Small Wave"
+                  className="w-[20%] h-24 object-contain opacity-30"
+                />
+              ))}
+            </div>
           </div>
+        </div>
+
+        {/* Bottom waves layer */}
+        <div
+          className="absolute bottom-0 left-[-20%] w-[140%] z-20 transition-opacity duration-300"
+          style={{ opacity: getBottomWavesOpacity() }}
+        >
+          {/* First bottom wave */}
           <div
-            className="wave-container overflow-hidden"
-            style={{ transform: getTransform("right", 1.8) }}
+            className="wave-container"
+            style={{ transform: getTransform("left", 0.8) }}
           >
-            <svg
-              className="wave-2"
-              viewBox="0 0 4320 320"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="none"
-            >
-              <path
-                fill="rgba(0, 119, 190, 0.3)"
-                d="M0,192 C480,192 480,100 960,100 C1440,100 1440,192 1920,192 C2400,192 2400,100 2880,100 C3360,100 3360,192 3840,192 L3840,320 L0,320 Z"
-              ></path>
-            </svg>
+            <div className="flex">
+              {[...Array(100)].map((_, i) => (
+                <img
+                  key={i}
+                  src={SmallWave.src}
+                  alt="Small Wave"
+                  className="w-[20%] h-16 object-contain opacity-30 rotate-180 brightness-0 invert"
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Second bottom wave */}
+          <div
+            className="wave-container absolute bottom-[3vh] left-[-1000%]"
+            style={{ transform: getTransform("right", 0.3) }}
+          >
+            <div className="flex">
+              {[...Array(100)].map((_, i) => (
+                <img
+                  key={i}
+                  src={SmallWave.src}
+                  alt="Small Wave"
+                  className="w-[20%] h-16 object-contain opacity-20 rotate-180 brightness-0 invert"
+                />
+              ))}
+            </div>
           </div>
         </div>
 
         <div className="relative z-20 h-full flex flex-col items-center justify-center">
           <div style={{ transform: textTransform }}>
-            <h1 className="text-4xl font-pixel text-white">
-              Welcome to the Underwater World
+            <h1 className="text-5xl font-pixel text-white">
+              Welcome to the Underwater World.
             </h1>
             <div className="flex justify-center mt-10">
               <p className="text-4xl animate-bounce text-white">↓</p>
@@ -169,13 +289,13 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[120%] text-center"
+            className="absolute top-[150vh] text-center"
             style={{ transform: textTransform }}
           >
             <p className="text-white text-4xl">𓆟</p>
             <h2 className="text-4xl font-pixel text-white">You are a Fish</h2>
             <p className="mt-4 text-2xl font-pixel text-blue-200">
-              Swimming in the deep blue sea
+              Swimming in the deep blue sea...
             </p>
           </div>
 
@@ -185,9 +305,9 @@ const UnderwaterParallax: React.FC = () => {
           >
             <div className="flex flex-col gap-4">
               <p className="text-2xl text-blue-200 leading-relaxed mx-10">
-                in these dark waters,
+                In these dark waters,
                 <br />
-                phishers lurk with their treacherous lures
+                phishers lurk with their treacherous lures...
               </p>
             </div>
           </div>
@@ -207,9 +327,9 @@ const UnderwaterParallax: React.FC = () => {
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-4xl font-pixel text-red-400 font-bold mb-12 mx-10">
-              and BEING SOME PHISHER'S DINNER
+              and BEING SOME PHISHER'S DINNER!
             </h2>
-            <p className="text-white text-4xl">𓆟</p>
+            {/* <p className="text-white text-4xl">𓆟</p> */}
           </div>
 
           <div
@@ -237,8 +357,10 @@ const UnderwaterParallax: React.FC = () => {
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-2xl font-pixel text-white mx-10">
-              But be careful! <br /> You are limited to only a number of clicks
-              <br /> -- the number of red flags there are in an example.
+              But be careful! <br /> You are limited to only a certain number of
+              clicks
+              <br />
+              —the number of red flags there are in the example.
             </h2>
           </div>
 
@@ -247,8 +369,10 @@ const UnderwaterParallax: React.FC = () => {
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-2xl font-pixel text-white mx-10">
-              Only click what seems suspicious. <br /> Click wrongly, and you'll
-              take damage...
+              Only click what seems suspicious. <br /> Click wrongly, and your
+              fish will
+              <br />
+              be one step closer to being fished...
             </h2>
           </div>
 
@@ -265,7 +389,7 @@ const UnderwaterParallax: React.FC = () => {
               <button
                 className="font-pixel text-3xl text-white
                   border-2 border-white px-10 py-3
-                  hover:border-blue-300 hover:scale-105 hover:bg-white hover:text-blue-900
+                  hover:border-white-300 hover:scale-105 hover:bg-white/10
                   transition-all duration-300 ease-in-out
                   pointer-events-auto cursor-pointer
                   z-[9999] relative"

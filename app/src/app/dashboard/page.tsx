@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import fishNormalBubble1 from "../assets/Fish_Normal_Bubble1.png";
+import Hook from "../assets/Hook_White.png";
 
 interface CategoryExp {
   categoryId: number;
@@ -42,6 +43,7 @@ function ExpBar({ current, max, label, level }: ExpBarProps) {
 }
 
 export default function Dashboard() {
+  const [isHookAnimating, setIsHookAnimating] = useState(false);
   const router = useRouter();
   const [categoryExps, setCategoryExps] = useState<CategoryExp[]>([]);
   const [error, setError] = useState("");
@@ -128,6 +130,14 @@ export default function Dashboard() {
     };
   };
 
+  const handleStartFishing = async () => {
+    setIsHookAnimating(true);
+    // Wait for animation to complete before navigating
+    setTimeout(() => {
+      router.push("/game");
+    }, 800); // Match this with animation duration
+  };
+
   return (
     <div className="fixed inset-0 bg-black text-white">
       {/* Grid background overlay*/}
@@ -204,8 +214,18 @@ export default function Dashboard() {
 
             {/* Fish avatar and Start Fishing button */}
             <div className="relative">
-              <span className="text-6xl mb-8 block text-center">🎣</span>
-              <div className="w-64 h-64 rounded-full flex items-center justify-center">
+              <div className="w-64 h-64 rounded-full flex items-center justify-center relative">
+                <img
+                  src={Hook.src}
+                  alt="Fishing Hook"
+                  className={`w-64 h-auto object-contain absolute bottom-[-25%] left-[-75%] z-10 pixel-art transition-all duration-1000 ease-out
+                    ${isHookAnimating ? "translate-y-[-100%]" : ""}`}
+                  style={{
+                    imageRendering: "pixelated",
+                    transform: isHookAnimating ? "translateY(-200%)" : "none",
+                    transition: "transform 1000ms ease-out",
+                  }}
+                />
                 <img
                   src={fishNormalBubble1.src}
                   alt="Fish Avatar"
@@ -222,7 +242,7 @@ export default function Dashboard() {
                 z-[9999] cursor-pointer
                 bg-transparent rounded
                 hover:bg-transparent focus:bg-transparent active:bg-transparent"
-              onClick={() => router.push("/game")}
+              onClick={handleStartFishing}
             >
               Start Fishing
             </Button>
