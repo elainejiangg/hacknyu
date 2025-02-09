@@ -1,6 +1,6 @@
 const express = require('express');
-const {  } = require('../controllers/questionController');
-const { isLoggedIn, getAllCategoryExps } = require('../middlewares/authMiddleware');
+const { createQuestionWithParts, getAllCategoryExps, updateCategoryExp } = require('../controllers/questionController');
+const { isLoggedIn } = require('../middlewares/authMiddleware');
 const { getRandomCategoryForUser, getRandomFeaturesForCategory, generatePhishingContent } = require('../middlewares/questionMiddleware')
 const router = express.Router();
 

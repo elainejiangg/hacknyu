@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         allowNull: false,
       },
+      reason: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       user_answered_suspicious: {
         type: DataTypes.BOOLEAN,
         allowNull: true,

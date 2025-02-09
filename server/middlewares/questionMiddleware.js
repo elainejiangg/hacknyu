@@ -1,4 +1,4 @@
-const { UserCategory, Category, Feature } = require('../models');
+const { UserCategory, Category, Feature, Question } = require('../models');
 const axios = require('axios');
 require('dotenv').config({ path: '../.env' });
 
@@ -116,36 +116,68 @@ exports.getRandomFeaturesForCategory = async (req, res, next) => {
 
 // actually generate the content
 exports.generatePhishingContent = async (req, res, next) => {
-  const category = await Category.findOne({ where: {id: req.selectedCategoryId} });
-  const categoryName = category.name;
-  const selectedFeatures = req.features.selected_feature_names;
-  const unselectedFeatures = req.features.non_selected_feature_names;
-  const apiKey = process.env.OPENAI_API_KEY;
-  const prompt = await getPrompt(categoryName, selectedFeatures, unselectedFeatures);
-  console.log('i generated a prompt')
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  try {
+    // Fetch category by id
+    const category = await Category.findOne({ where: { id: req.selectedCategoryId } });
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+    const categoryName = category.name;
+
+    // Extract selected and unselected features
+    const selectedFeatures = req.features.selected_feature_names;
+    const unselectedFeatures = req.features.non_selected_feature_names;
+
+    // Generate prompt for OpenAI
+    const prompt = await getPrompt(categoryName, selectedFeatures, unselectedFeatures);
+    console.log('Generated prompt');
+
+    // Send request to OpenAI API
+    const apiKey = process.env.OPENAI_API_KEY;
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-          model: "gpt-4",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.7
-      })
-  });
+        model: "gpt-4",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7,
+      }),
+    });
 
-  if (!response.ok) {
-      throw new Error("Failed to generate phishing email");
+    // console.log('Response: ', response)
+    // Check for unsuccessful response
+    if (!response.ok) {
+      return res.status(500).json({ message: "Failed to generate phishing email" });
+    }
+
+    // Parse the response from OpenAI
+    const data = await response.json();
+    const phishingContent = data.choices[0].message.content;
+
+    // Store phishing content in the request object for further processing
+    req.phishingContent = JSON.parse(phishingContent);
+    console.log('Phishing content: ', req.phishingContent);
+    const userId = req.userId;
+    const categoryId = req.selectedCategoryId;
+    const userCategory = await UserCategory.findOne({ where: { user_id: userId, category_id: categoryId } })
+    const userCategoryId = userCategory.id;
+    const question = await Question.create({
+      user_category_junction_id: userCategoryId,
+      question_content: req.phishingContent
+    })
+
+    return res.status(201).json(question);
+
+    // Proceed to the next middleware or route handler
+    // next();
+  } catch (error) {
+    console.error('Error generating phishing content:', error);
+    return res.status(500).json({ message: 'Error generating phishing content', error: error.message });
   }
-
-  const data = await response.json();
-  const phishingContent = data.choices[0].message.content;
-  req.phisingContent = JSON.parse(phishingContent);
-  next();
-  // return res.status(200).json(JSON.parse(phishingEmail));
-}
+};
 
 
 async function getPrompt(categoryName, selectedFeatures, unselectedFeatures) {
