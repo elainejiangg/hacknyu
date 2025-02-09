@@ -122,9 +122,12 @@ export function WebsiteViewerSmall({
 
     try {
       // Trigger the endpoint with the selected element type and index
-      const response = await axios.put(`/answers/${index}/add-flag`, {
-        type: type,
-      });
+      const response = await axios.put(
+        `http://localhost:3001/answers/${index}/add-flag`,
+        {
+          type: type,
+        }
+      );
       console.log("Flag added:", response.data);
     } catch (error) {
       console.error("Error adding flag:", error);

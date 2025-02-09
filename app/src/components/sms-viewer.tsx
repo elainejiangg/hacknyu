@@ -1,13 +1,127 @@
+// "use client";
+
+// import { useState, useEffect } from "react";
+// import { Selection } from "@/types/challenge";
+
+// interface MessageBubbleProps {
+//   sender: string;
+//   message: string[]; // Array of strings representing each part of the message
+//   onSelect: (selection: Selection) => void;
+//   selectedElements: Selection[];
+//   parts: {
+//     id: number;
+//     question_part_content: string;
+//   }[]; // Pass the parts array to get the id for each message part
+// }
+
+// function generateRandomTimestamp() {
+//   const hours = Math.floor(Math.random() * 12) + 1;
+//   const minutes = Math.floor(Math.random() * 60);
+//   const ampm = Math.random() < 0.5 ? "AM" : "PM";
+//   return `Today ${hours}:${minutes.toString().padStart(2, "0")} ${ampm}`;
+// }
+
+// export function SMSViewer({
+//   sender,
+//   message,
+//   onSelect,
+//   selectedElements,
+//   parts,
+// }: MessageBubbleProps) {
+//   const [timestamp, setTimestamp] = useState("Today --:-- --");
+
+//   useEffect(() => {
+//     setTimestamp(generateRandomTimestamp());
+//   }, []);
+
+//   // Check if an element is selected based on its type and id (using id from parts)
+//   const isSelected = (type: Selection["type"], id: number) =>
+//     selectedElements.some((el) => el.type === type && el.index === id);
+
+//   // Handle clicking on sender (sender's part)
+//   const handleSenderClick = () => {
+//     console.log("Clicked sender:", { type: "sender", index: parts[0].id });
+//     if (isSelected("sender", parts[0].id)) {
+//       onSelect({ type: "sender", index: parts[0].id }); // Will be removed in parent
+//     } else {
+//       onSelect({ type: "sender", index: parts[0].id }); // Will be added in parent
+//     }
+//   };
+
+//   // Handle clicking on message parts (using id from parts)
+//   const handlePartClick = (id: number) => {
+//     console.log("Clicked message part:", {
+//       type: "message",
+//       index: id,
+//       text: message.find((_, idx) => parts[idx].id === id), // Find the content of the part based on id
+//     });
+//     if (isSelected("message", id)) {
+//       onSelect({ type: "message", index: id }); // Will be removed in parent
+//     } else {
+//       onSelect({ type: "message", index: id }); // Will be added in parent
+//     }
+//   };
+
+//   return (
+//     <div className="w-full bg-black/20 rounded-xl p-8">
+//       {/* Header with sender info and timestamp */}
+//       <div className="text-center mb-4">
+//         <div className="text-white/60 text-lg font-pixel">
+//           <span
+//             className={`cursor-pointer transition-colors rounded px-0.5
+//               ${
+//                 isSelected("sender", parts[0].id)
+//                   ? "bg-lime-400/30"
+//                   : "hover:bg-lime-400/30"
+//               }`}
+//             onClick={handleSenderClick}
+//           >
+//             {sender}
+//           </span>
+//         </div>
+//         <div className="text-white/40 text-base font-pixel">{timestamp}</div>
+//       </div>
+
+//       {/* Message bubble */}
+//       <div className="flex justify-start">
+//         <div className="bg-white/10 rounded-3xl rounded-tl-sm px-6 py-4 max-w-[90%]">
+//           <p className="text-white font-pixel text-lg leading-relaxed">
+//             {message.map((part, index) => (
+//               <span
+//                 key={parts[index].id} // Use the id as the key for each part
+//                 className={`cursor-pointer transition-colors rounded px-0.5
+//                   ${
+//                     isSelected("message", parts[index].id)
+//                       ? "bg-lime-400/30"
+//                       : "hover:bg-lime-400/30"
+//                   }`}
+//                 onClick={() => handlePartClick(parts[index].id)} // Pass the id as the index
+//               >
+//                 {part}
+//               </span>
+//             ))}
+//           </p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
 "use client";
 
 import { useState, useEffect } from "react";
 import { Selection } from "@/types/challenge";
+import axios from "axios"; // Ensure axios is imported
 
 interface MessageBubbleProps {
   sender: string;
-  message: string[]; // array of strings for each sentence of the message
+  message: string[]; // Array of strings representing each part of the message
   onSelect: (selection: Selection) => void;
   selectedElements: Selection[];
+  parts: {
+    id: number;
+    question_part_content: string;
+  }[]; // Pass the parts array to get the id for each message part
 }
 
 function generateRandomTimestamp() {
@@ -22,6 +136,7 @@ export function SMSViewer({
   message,
   onSelect,
   selectedElements,
+  parts,
 }: MessageBubbleProps) {
   const [timestamp, setTimestamp] = useState("Today --:-- --");
 
@@ -29,28 +144,59 @@ export function SMSViewer({
     setTimestamp(generateRandomTimestamp());
   }, []);
 
-  const isSelected = (type: Selection["type"], index: number) =>
-    selectedElements.some((el) => el.type === type && el.index === index);
+  // Check if an element is selected based on its type and id (using id from parts)
+  const isSelected = (type: Selection["type"], id: number) =>
+    selectedElements.some((el) => el.type === type && el.index === id);
 
-  const handleSenderClick = () => {
-    console.log("Clicked sender:", { type: "sender" });
-    if (isSelected("sender", -1)) {
-      onSelect({ type: "sender", index: -1 }); // Will be removed in parent
+  // Handle clicking on sender (sender's part)
+  const handleSenderClick = async () => {
+    console.log("Clicked sender:", { type: "sender", index: parts[0].id });
+
+    // API call to add flag to sender
+    try {
+      const response = await axios.put(
+        `http://localhost:3001/answers/${parts[0].id}/add-flag`,
+        {
+          type: "sender",
+        }
+      );
+      console.log("Flag added:", response.data);
+    } catch (error) {
+      console.error("Error adding flag:", error);
+    }
+
+    if (isSelected("sender", parts[0].id)) {
+      onSelect({ type: "sender", index: parts[0].id }); // Will be removed in parent
     } else {
-      onSelect({ type: "sender", index: -1 }); // Will be added in parent
+      onSelect({ type: "sender", index: parts[0].id }); // Will be added in parent
     }
   };
 
-  const handlePartClick = (index: number) => {
+  // Handle clicking on message parts (using id from parts)
+  const handlePartClick = async (id: number) => {
     console.log("Clicked message part:", {
       type: "message",
-      index,
-      text: message[index],
+      index: id,
+      text: message.find((_, idx) => parts[idx].id === id), // Find the content of the part based on id
     });
-    if (isSelected("message", index)) {
-      onSelect({ type: "message", index }); // Will be removed in parent
+
+    // API call to add flag to message part
+    try {
+      const response = await axios.put(
+        `http://localhost:3001/answers/${id}/add-flag`,
+        {
+          type: "message",
+        }
+      );
+      console.log("Flag added:", response.data);
+    } catch (error) {
+      console.error("Error adding flag:", error);
+    }
+
+    if (isSelected("message", id)) {
+      onSelect({ type: "message", index: id }); // Will be removed in parent
     } else {
-      onSelect({ type: "message", index }); // Will be added in parent
+      onSelect({ type: "message", index: id }); // Will be added in parent
     }
   };
 
@@ -62,7 +208,7 @@ export function SMSViewer({
           <span
             className={`cursor-pointer transition-colors rounded px-0.5
               ${
-                isSelected("sender", -1)
+                isSelected("sender", parts[0].id)
                   ? "bg-lime-400/30"
                   : "hover:bg-lime-400/30"
               }`}
@@ -80,14 +226,14 @@ export function SMSViewer({
           <p className="text-white font-pixel text-lg leading-relaxed">
             {message.map((part, index) => (
               <span
-                key={index}
+                key={parts[index].id} // Use the id as the key for each part
                 className={`cursor-pointer transition-colors rounded px-0.5
                   ${
-                    isSelected("message", index)
+                    isSelected("message", parts[index].id)
                       ? "bg-lime-400/30"
                       : "hover:bg-lime-400/30"
                   }`}
-                onClick={() => handlePartClick(index)}
+                onClick={() => handlePartClick(parts[index].id)} // Pass the id as the index
               >
                 {part}
               </span>

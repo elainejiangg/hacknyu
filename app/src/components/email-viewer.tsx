@@ -8,6 +8,10 @@ interface EmailViewerProps {
   attachments: string[];
   onSelect: (selection: Selection) => void;
   isSelected: (type: Selection["type"], index: number) => boolean;
+  parts: {
+    id: number;
+    question_part_content: string;
+  }[]; // Accept parts to map `index` to `id`
 }
 
 export function EmailViewer({
@@ -18,6 +22,7 @@ export function EmailViewer({
   attachments,
   onSelect,
   isSelected,
+  parts,
 }: EmailViewerProps) {
   return (
     <div className="flex h-full">
@@ -36,13 +41,13 @@ export function EmailViewer({
         <div className="mb-4">
           <h3
             className={`font-bold text-xl text-white cursor-pointer ${
-              isSelected("subject", -1)
+              isSelected("subject", parts[0].id)
                 ? "bg-lime-400/30"
                 : "hover:bg-lime-400/30"
             }`}
             onClick={() => {
               console.log("Clicked subject");
-              onSelect({ type: "subject", index: -1 });
+              onSelect({ type: "subject", index: parts[0].id });
             }}
           >
             {subject}
@@ -51,13 +56,13 @@ export function EmailViewer({
             From:{" "}
             <span
               className={`cursor-pointer ${
-                isSelected("sender", -1)
+                isSelected("sender", parts[1].id)
                   ? "bg-lime-400/30"
                   : "hover:bg-lime-400/30"
               }`}
               onClick={() => {
                 console.log("Clicked sender");
-                onSelect({ type: "sender", index: -1 });
+                onSelect({ type: "sender", index: parts[1].id });
               }}
             >
               {sender}
@@ -68,16 +73,16 @@ export function EmailViewer({
 
         {/* Email Body */}
         {body.map((line, index) => (
-          <p key={index} className="font-pixel text-white">
+          <p key={parts[index + 3].id} className="font-pixel text-white">
             <span
               className={`cursor-pointer ${
-                isSelected("body", index)
+                isSelected("body", parts[index + 3].id)
                   ? "bg-lime-400/30"
                   : "hover:bg-lime-400/30"
               }`}
               onClick={() => {
                 console.log(`Clicked body line ${index}`);
-                onSelect({ type: "body", index });
+                onSelect({ type: "body", index: parts[index + 3].id });
               }}
             >
               {line}
@@ -88,15 +93,15 @@ export function EmailViewer({
         {/* Attachments */}
         {attachments.map((attachment, index) => (
           <div
-            key={index}
+            key={parts[index + 2].id}
             className={`mt-4 p-2 border border-gray-700 rounded cursor-pointer ${
-              isSelected("attachment", index)
+              isSelected("attachment", parts[index + 2].id)
                 ? "bg-lime-400/30"
                 : "hover:bg-lime-400/30"
             }`}
             onClick={() => {
               console.log(`Clicked attachment ${index}`);
-              onSelect({ type: "attachment", index });
+              onSelect({ type: "attachment", index: parts[index + 2].id });
             }}
           >
             <span className="font-pixel text-white">📎 {attachment}</span>
