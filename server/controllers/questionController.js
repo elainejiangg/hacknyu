@@ -3,8 +3,6 @@ const { Sequelize } = require('sequelize');
 const axios = require('axios');
 require('dotenv').config({ path: '../.env' });
 
-console.log("OpenAI API Key:", process.env.OPENAI_API_KEY);
-
 exports.generateQuestion = async (req, res) => {
 
     const userId = req.session.passport.user;
@@ -15,7 +13,7 @@ exports.generateQuestion = async (req, res) => {
     const features = await getRandomFeaturesForCategory(categoryId);
     const selectedFeatureNames = features['selected_feature_names'];
     const nonSelectedFeatureNames = features['non_selected_feature_names'];
-
+    const questionParts = 
 
 }
 

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -67,12 +68,28 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <div className="text-red-400 text-sm font-pixel text-center">
+              {error}
+            </div>
+          )}
+
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4"
+            onSubmit={handleSubmit}
+          >
             <div className="space-y-2">
-              <label className="text-sm font-pixel" htmlFor="email">
-                EMAIL
+              <label className="text-sm font-pixel" htmlFor="identifier">
+                USERNAME/EMAIL
               </label>
               <input
+                id="identifier"
+                type="text"
+                value={loginData.identifier}
+                onChange={(e) =>
+                  setLoginData({ ...loginData, identifier: e.target.value })
+                }
                 id="email"
                 type="email"
                 value={formData.email}
@@ -89,6 +106,10 @@ export default function LoginPage() {
               <input
                 id="password"
                 type="password"
+                value={loginData.password}
+                onChange={(e) =>
+                  setLoginData({ ...loginData, password: e.target.value })
+                }
                 value={formData.password}
                 onChange={handleChange}
                 className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg font-pixel text-white focus:outline-none focus:border-white/40"
