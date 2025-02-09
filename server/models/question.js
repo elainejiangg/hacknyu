@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
       user_category_junction_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
+      },
+      question_content: {
+        type: DataTypes.JSON,
+        allowNull: true
       }
     }, {
       timestamps: true,

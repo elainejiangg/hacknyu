@@ -1,13 +1,14 @@
 const express = require("express");
 const {
+  createQuestionWithParts,
   getAllCategoryExps,
   updateCategoryExp,
 } = require("../controllers/questionController");
 const { isLoggedIn } = require("../middlewares/authMiddleware");
 const {
   getRandomCategoryForUser,
-  getRandomFeaturesForCategory,
   generatePhishingContent,
+  getRandomFeaturesForCategory,
 } = require("../middlewares/questionMiddleware");
 const router = express.Router();
 
@@ -15,8 +16,8 @@ router.get(
   "/generate-question",
   isLoggedIn,
   getRandomCategoryForUser,
-  getRandomFeaturesForCategory,
-  generatePhishingContent
+  generatePhishingContent,
+  getRandomFeaturesForCategory
 );
 
 // Get all category exps for a user to display on their dashboard

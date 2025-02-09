@@ -1,4 +1,4 @@
-const { UserCategory, Category, Question } = require("../models");
+const { UserCategory, Category, Question, Feature } = require('../models');
 // const axios = require('axios');
 require("dotenv").config({ path: "../.env" });
 
@@ -33,18 +33,69 @@ exports.createQuestionWithParts = async (req, res, next) => {
     const userCategoryId = userCategory.id;
     const phishingContent = req.phishingContent;
 
-    // Create a new Question entry
-    const question = await Question.create({
-      user_category_junction_id: userCategoryId,
-    });
+        console.log('phishing content in q with parts: ', phishingContent)
 
-    // Create question parts
-    // for (const [key])
-  } catch (error) {
-    console.error("Error creating question with parts:", error);
-    res.status(500).json({ message: "Error creating question with parts" });
-  }
-};
+        if (!phishingContent || typeof phishingContent !== 'object') {
+            return res.status(400).json({ message: 'Invalid phishing content data' });
+          }
+
+        // Create a new Question entry
+        const question = await Question.create({
+            user_category_junction_id: userCategoryId
+        });
+
+        const questionId = question.id;
+
+        // Create question parts
+        for (const [key, value] of Object.entries(phishingContent)) {
+            if (key === 'body' && Array.isArray(value)) {
+                console.log('i am in body')
+                for (const sentence of value) {
+                    const bodyFeature = await Feature.findOne({
+                        where: {name: 'Message Body'},
+                    });
+
+                    if (!bodyFeature) {
+                        return res.status(404).json({ message: 'Body feature not found' });
+                    }
+                }
+
+                await questionPart.create({
+                    question_id: questionId,
+                    feature_id: bodyFeature.id,
+                    is_suspicious: sentence.suspicious,
+                    reason: sentence.reason,
+                    user_answered_suspicious: null,
+                })
+            } else if (value && typeof value === 'object' && value.text !== undefined) {
+                const featureName = key.charAt(0).toUpperCase() + key.slice(1);
+
+                const featureRecord = await Feature.findOne({
+                    where: { name: featureName },
+                })
+
+                if (!featureRecord) {
+                    return res.status(404).json({ message: `Feature ${featureName} not found` });
+                }
+                console.log('i am creating a part: ', featureName)
+                await questionPart.create({
+                    question_id: questionId,
+                    feature_id: featureRecord.id,
+                    is_suspicious: value.suspicious,
+                    reason: value.reason,
+                    user_answered_suspicious: null,
+                })
+            }
+        }
+
+        res.status(200).json({ message: 'Phishing content stored successfully in different question parts' })
+
+    } catch (error) {
+        console.error('Error creating question with parts:', error);
+        res.status(500).json({ message: 'Error creating question with parts: ' + error });
+      }
+}
+
 
 exports.getAllCategoryExps = async (req, res) => {
   const userId = req.userId;
@@ -105,6 +156,7 @@ exports.getAllCategoryExps = async (req, res) => {
     res.status(500).json({ message: "Error getting all exps" });
   }
 };
+
 
 // there should be middleware for submitting the response
 exports.updateCategoryExp = async (req, res) => {

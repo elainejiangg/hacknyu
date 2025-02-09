@@ -4,11 +4,28 @@ import { Card } from "@/components/ui/card";
 import { SMSChallenge } from "@/components/sms-challenge";
 import { WebsiteChallenge } from "@/components/website-challenge";
 import { EmailChallenge } from "@/components/email-challenge";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+
+// Import your assets
+import fishBubble1 from "../assets/Fish_Normal_Bubble1.png";
+import fishBubble2 from "../assets/Fish_Normal_Bubble2.png";
+import seaBackground from "../assets/Sea_extended.png";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function GamePage() {
   const router = useRouter();
+
+  const [currentFish, setCurrentFish] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFish((prev) => (prev === 0 ? 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="fixed inset-0 bg-black text-white">
@@ -20,8 +37,6 @@ export default function GamePage() {
         <div className="w-[70%] pl-8 pr-3 py-4">
           <Card className="h-full bg-white/5 border-white/10 p-12">
             <WebsiteChallenge />
-            {/* <SMSChallenge /> */}
-            {/* <EmailChallenge /> */}
           </Card>
         </div>
 
@@ -32,7 +47,7 @@ export default function GamePage() {
             <div className="absolute top-4 right-4">
               <Button
                 className="font-pixel text-white/50 text-sm
-                  hover:text-white hover:scale-105
+                  hover:text-white hover:font-bold hover:scale-105
                   transition-all duration-300 ease-in-out
                   cursor-pointer bg-transparent
                   hover:bg-transparent focus:bg-transparent active:bg-transparent"
@@ -43,10 +58,48 @@ export default function GamePage() {
             </div>
 
             {/* Graphics content */}
-            <div className="h-full flex items-center justify-center">
-              <p className="text-white/60 font-pixel">
-                Graphics coming soon...
-              </p>
+            {/* Sea background */}
+            <div
+              className="absolute inset-0"
+              style={{
+                overflow: "hidden",
+              }}
+            >
+              <div
+                className="w-full h-full"
+                style={{
+                  backgroundImage: `url(${seaBackground.src})`,
+                  backgroundSize: "1020px auto", // Added extra width (1920 + 2*50px buffer)
+                  backgroundPosition: "center top", // Changed to center top
+                  backgroundRepeat: "repeat-x",
+                  imageRendering: "pixelated",
+                  height: "1080px",
+                  minHeight: "1080px",
+                  transform: `translateX(400px)`,
+                  transition: "transform 1s ease-in-out",
+                  marginLeft: "-50px", // Pull background left to hide edge
+                  width: "calc(100% + 100px)", // Make wider than container
+                }}
+              />
+            </div>
+
+            {/* Fish animation */}
+            <div
+              className="absolute bottom-[20%] left-1/2 -translate-x-1/2 w-[33%]"
+              style={{
+                transform: `translate(-50%, ${
+                  currentFish === 1 ? "-10px" : "0px"
+                })`,
+              }}
+            >
+              <Image
+                src={currentFish === 0 ? fishBubble1 : fishBubble2}
+                alt="Fish"
+                width={0}
+                height={0}
+                className="w-full h-auto"
+                priority
+              />
             </div>
           </Card>
         </div>
