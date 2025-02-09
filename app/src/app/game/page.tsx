@@ -170,13 +170,22 @@ export default function GamePage() {
             {questionData && questionParts && questionCategory && (
               <div>
                 {questionCategory === 1 && (
-                  <WebsiteChallenge data={questionData} parts={questionParts} />
+                  <WebsiteChallenge
+                    questionId={questionID}
+                    parts={questionParts["questionParts"]}
+                  />
                 )}
                 {questionCategory === 2 && (
-                  <SMSChallenge data={questionData} parts={questionParts} />
+                  <SMSChallenge
+                    questionId={questionID}
+                    parts={questionParts["questionParts"]}
+                  />
                 )}
                 {questionCategory === 3 && (
-                  <EmailChallenge data={questionData} parts={questionParts} />
+                  <EmailChallenge
+                    questionId={questionID}
+                    parts={questionParts["questionParts"]}
+                  />
                 )}
               </div>
             )}
