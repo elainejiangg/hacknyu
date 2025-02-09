@@ -1,17 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { Dashboard } from "@/components/dashboard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-black p-6 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-black via-black to-black text-white">
       {/* Grid background overlay */}
       <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
-      <div className="relative container max-w-4xl mx-auto h-screen flex flex-col items-center justify-center gap-8">
+      <div className="relative container max-w-4xl mx-auto min-h-screen flex flex-col items-center justify-center gap-8">
         <div className="text-center space-y-6">
           <h1 className="text-4xl font-pixel pixel-corners bg-white/5 px-8 py-4 inline-block">
             PHISHING SIMULATOR

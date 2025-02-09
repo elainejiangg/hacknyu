@@ -53,11 +53,11 @@ export function Dashboard() {
 
       <div className="flex w-full h-full">
         {/* Left section - Stats (1/3 width) */}
-        <div className="w-1/3 p-6">
+        <div className="w-1/3 pl-8 pr-3 py-4">
           <Card className="h-full bg-white/5 border-white/10 p-6">
-            <div className="space-y-8">
+            <div className="space-y-6">
               <h2 className="text-2xl font-pixel text-center">Stats</h2>
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <ExpBar
                   current={75}
                   max={100}
@@ -82,8 +82,8 @@ export function Dashboard() {
         </div>
 
         {/* Right section - Fish avatar and game button (2/3 width) */}
-        <div className="w-2/3 p-6">
-          <Card className="h-full bg-white/5 border-white/10 p-6 flex flex-col items-center justify-center gap-8">
+        <div className="w-2/3 pl-3 pr-8 py-4">
+          <Card className="h-full bg-white/5 border-white/10 p-6 flex flex-col items-center justify-center gap-6">
             <div className="relative">
               <span className="text-6xl mb-8 block">🎣</span>
               <div className="w-64 h-64 bg-white/10 rounded-full flex items-center justify-center">

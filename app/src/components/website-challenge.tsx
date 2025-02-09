@@ -1,138 +1,123 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
-
-interface BrowserWindowProps {
-  url: string;
-  children: React.ReactNode;
-}
-
-function BrowserWindow({ url, children }: BrowserWindowProps) {
-  return (
-    <div className="w-full bg-black/20 rounded-xl overflow-hidden border border-white/10">
-      {/* Browser chrome/toolbar */}
-      <div className="bg-white/5 p-4 border-b border-white/10">
-        {/* URL bar */}
-        <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 font-mono text-sm">
-          <span className="text-white/60">https://</span>
-          <span className="text-white/90">{url}</span>
-        </div>
-      </div>
-
-      {/* Website content */}
-      <div className="p-6">{children}</div>
-    </div>
-  );
-}
-
-interface WebsiteContentProps {
-  titleParts: string[];
-  emailPlaceholder?: string;
-  passwordPlaceholder?: string;
-  buttonText: string;
-  footerParts: string[];
-}
-
-function WebsiteContent({
-  titleParts,
-  emailPlaceholder = "Enter your email",
-  passwordPlaceholder = "Enter your password",
-  buttonText,
-  footerParts,
-}: WebsiteContentProps) {
-  return (
-    <div className="max-w-md mx-auto space-y-8">
-      <div className="text-center">
-        <div className="text-4xl font-bold text-blue-400 mb-2">
-          {titleParts.map((part, index) => (
-            <span
-              key={index}
-              className="hover:bg-lime-400/30 cursor-pointer transition-colors rounded px-0.5"
-            >
-              {part}
-            </span>
-          ))}
-        </div>
-        <p className="text-white/60">Log in to your account</p>
-      </div>
-
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <label className="block text-sm font-pixel text-white/80">
-            Email address
-          </label>
-          <input
-            type="email"
-            className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg font-pixel text-white/60"
-            placeholder={emailPlaceholder}
-            disabled
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label className="block text-sm font-pixel text-white/80">
-            Password
-          </label>
-          <input
-            type="password"
-            className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg font-pixel text-white/60"
-            placeholder={passwordPlaceholder}
-            disabled
-          />
-        </div>
-
-        <button
-          className="w-full bg-blue-500/80 text-white font-pixel py-3 rounded-lg mt-6"
-          disabled
-        >
-          {buttonText}
-        </button>
-      </div>
-
-      <div className="text-center text-sm text-white/40">
-        {footerParts.map((part, index) => (
-          <p
-            key={index}
-            className="hover:bg-lime-400/30 cursor-pointer transition-colors rounded px-0.5"
-          >
-            {part}
-          </p>
-        ))}
-      </div>
-    </div>
-  );
-}
+import { WebsiteViewerSmall } from "@/components/website-viewer-small";
+import { WebsiteViewerMedium } from "@/components/website-viewer-medium";
+import { WebsiteViewerLarge } from "@/components/website-viewer-large";
+import { ChallengeBase } from "@/components/challenge-base";
+import { useSelectionState } from "@/hooks/useSelectionState";
 
 export function WebsiteChallenge() {
+  const { selectedElements, handleSelect, isSelected } = useSelectionState();
+
+  // Small version data
+  const smallData = {
+    url: "secure-paypaI.com/login",
+    title: "PaypaI",
+  };
+
+  // Medium version data
+  const mediumData = {
+    url: "secure-account-verify.net/claim",
+    title: "Claim Your Prize!",
+    mainText: [
+      "Congratulations! You've been selected as one of our lucky winners.",
+      "Your unclaimed prize of $1,000,000 is waiting for you.",
+      "Click below to verify your identity and claim your prize immediately.",
+    ],
+    buttonText: "Claim Now",
+  };
+
+  // Large version data
+  const largeData = {
+    url: "tax-refund-portal.gov.org/claim-refund",
+    title: "IRS Tax Refund Portal",
+    mainText: [
+      "Important Notice: You have an unclaimed tax refund waiting.",
+      "Our records indicate that you are eligible for an additional refund of $4,829.73 from your 2022 tax return.",
+      "To process your refund, please verify your information below and provide payment details for direct deposit.",
+    ],
+    formSections: [
+      {
+        title: "Personal Information",
+        fields: [
+          {
+            label: "Full Name",
+            type: "text",
+            placeholder: "Enter your full name",
+          },
+          {
+            label: "Social Security Number",
+            type: "text",
+            placeholder: "XXX-XX-XXXX",
+          },
+          { label: "Date of Birth", type: "date", placeholder: "MM/DD/YYYY" },
+          { label: "Phone Number", type: "tel", placeholder: "(XXX) XXX-XXXX" },
+        ],
+      },
+      {
+        title: "Bank Details",
+        fields: [
+          { label: "Bank Name", type: "text", placeholder: "Enter bank name" },
+          {
+            label: "Account Number",
+            type: "text",
+            placeholder: "Enter account number",
+          },
+          {
+            label: "Routing Number",
+            type: "text",
+            placeholder: "Enter routing number",
+          },
+          {
+            label: "Account Type",
+            type: "text",
+            placeholder: "Checking or Savings",
+          },
+        ],
+      },
+    ],
+    buttonText: "Claim Your Refund Now",
+    footerLinks: [
+      "Need help? Contact support",
+      "Privacy Policy",
+      "Terms of Service",
+      "IRS.gov",
+    ],
+  };
+
+  // Use small version by default, uncomment medium version to switch
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-pixel">Detect the Phishing Attempt</h2>
-      <div className="prose prose-invert">
-        <p className="font-pixel text-lg mb-6">
-          Click on any suspicious elements in this website:
-        </p>
-        <div className="mt-8 mb-8">
-          <BrowserWindow url="secure-paypaI.com/login">
-            <WebsiteContent
-              titleParts={["PaypaI"]}
-              buttonText="Log In"
-              footerParts={[
-                "Having trouble logging in?",
-                "Reset your password",
-              ]}
-            />
-          </BrowserWindow>
-        </div>
-        <div className="mt-8 p-6 bg-white/5 rounded-lg">
-          <p className="text-base font-pixel text-white/60">
-            Suspicious elements:
-            <br />- Misspelled domain (PaypaI with capital I)
-            <br />- Suspicious URL (not paypal.com)
-            <br />- Slightly off brand styling
-            <br />- Unusual security certificate
-          </p>
-        </div>
-      </div>
-    </div>
+    <ChallengeBase
+      instruction="Click on any suspicious elements in this website:"
+      selectedElements={selectedElements}
+      onSelect={handleSelect}
+    >
+      {/* <WebsiteViewerSmall
+        url={smallData.url}
+        title={smallData.title}
+        onSelect={handleSelect}
+        isSelected={isSelected}
+      /> */}
+
+      {/* <WebsiteViewerMedium
+        url={mediumData.url}
+        title={mediumData.title}
+        mainText={mediumData.mainText}
+        buttonText={mediumData.buttonText}
+        onSelect={handleSelect}
+        isSelected={isSelected}
+      /> */}
+
+      <WebsiteViewerLarge
+        url={largeData.url}
+        title={largeData.title}
+        mainText={largeData.mainText}
+        formSections={largeData.formSections}
+        buttonText={largeData.buttonText}
+        footerLinks={largeData.footerLinks}
+        onSelect={handleSelect}
+        isSelected={isSelected}
+      />
+    </ChallengeBase>
   );
 }

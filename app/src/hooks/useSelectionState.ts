@@ -1,37 +1,34 @@
 "use client";
 
 import { useState } from "react";
-
-export interface Selection {
-  type: "sender" | "message";
-  index?: number;
-}
+import { Selection } from "@/types/challenge";
 
 export function useSelectionState() {
   const [selectedElements, setSelectedElements] = useState<Selection[]>([]);
 
   const handleSelect = (selection: Selection) => {
     setSelectedElements((prev) => {
-      const isAlreadySelected = prev.some(
+      const exists = prev.some(
         (el) => el.type === selection.type && el.index === selection.index
       );
 
-      if (isAlreadySelected) {
-        return prev.filter(
-          (el) => !(el.type === selection.type && el.index === selection.index)
-        );
-      } else {
-        return [...prev, selection];
-      }
+      const newState = exists
+        ? prev.filter(
+            (el) =>
+              !(el.type === selection.type && el.index === selection.index)
+          )
+        : [...prev, selection];
+
+      console.log("Currently selected elements:", newState);
+      return newState;
     });
   };
 
-  const isSelected = (type: string, index?: number) =>
-    selectedElements.some((el) => el.type === type && el.index === index);
-
-  return {
-    selectedElements,
-    handleSelect,
-    isSelected,
+  const isSelected = (type: Selection["type"], index: number) => {
+    return selectedElements.some(
+      (el) => el.type === type && el.index === index
+    );
   };
+
+  return { selectedElements, handleSelect, isSelected };
 }
