@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const UnderwaterParallax: React.FC = () => {
   const [scrollValue, setScrollValue] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
@@ -178,7 +180,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[450vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[250vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <div className="flex flex-col gap-4">
@@ -191,7 +193,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[550vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[350vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <p className="text-2xl text-blue-200 leading-relaxed mx-10">
@@ -201,7 +203,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[650vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[450vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-4xl font-pixel text-red-400 font-bold mb-12 mx-10">
@@ -211,7 +213,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[850vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[550vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-2xl font-pixel text-white mx-10">
@@ -221,7 +223,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[950vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[650vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-2xl font-pixel text-white mx-10">
@@ -231,7 +233,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[1050vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[750vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-2xl font-pixel text-white mx-10">
@@ -241,7 +243,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[1150vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
+            className="absolute top-[850vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel"
             style={{ transform: getVerticalTransform(1) }}
           >
             <h2 className="text-2xl font-pixel text-white mx-10">
@@ -251,7 +253,7 @@ const UnderwaterParallax: React.FC = () => {
           </div>
 
           <div
-            className="absolute top-[1250vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel z-[9999] pointer-events-auto"
+            className="absolute top-[950vh] w-screen h-screen flex flex-col items-center justify-center text-center font-pixel z-[9999] pointer-events-auto"
             style={{ transform: getVerticalTransform(1) }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -270,7 +272,7 @@ const UnderwaterParallax: React.FC = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  console.log("Button clicked!");
+                  router.push("/dashboard");
                 }}
               >
                 PLAY
