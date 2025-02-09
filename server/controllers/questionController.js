@@ -1,25 +1,47 @@
-const { UserCategory, Category } = require('../models');
+const { UserCategory, Category, Question } = require('../models');
 // const axios = require('axios');
 require('dotenv').config({ path: '../.env' });
 
-exports.generateQuestion = async (req, res) => {
+// exports.generateQuestion = async (req, res) => {
 
-    // Access data from the middleware
-    const features = req.features;
+//     // Access data from the middleware
+//     const features = req.features;
 
+//     try {
+//         const selectedFeatureNames = features.selected_feature_names;
+//         const nonSelectedFeatureNames = features.non_selected_feature_names;
+
+//         // Send the response back with the selected features
+//         res.status(200).json({
+//           category,
+//           selectedFeatureNames,
+//           nonSelectedFeatureNames
+//         });
+//       } catch (error) {
+//         console.error('Error generating question:', error);
+//         res.status(500).json({ message: 'Error generating question' });
+//       }
+// }
+
+exports.createQuestionWithParts = async (req, res, next) => {
     try {
-        const selectedFeatureNames = features.selected_feature_names;
-        const nonSelectedFeatureNames = features.non_selected_feature_names;
+        const userId = req.userId;
+        const categoryId = req.selectedCategoryId;
+        const userCategory = await UserCategory.findOne({ where: { user_id: userId, category_id: categoryId } })
+        const userCategoryId = userCategory.id;
+        const phishingContent = req.phishingContent;
 
-        // Send the response back with the selected features
-        res.status(200).json({
-          category,
-          selectedFeatureNames,
-          nonSelectedFeatureNames
+        // Create a new Question entry
+        const question = await Question.create({
+            user_category_junction_id: userCategoryId
         });
-      } catch (error) {
-        console.error('Error generating question:', error);
-        res.status(500).json({ message: 'Error generating question' });
+
+        // Create question parts
+        // for (const [key])
+
+    } catch (error) {
+        console.error('Error creating question with parts:', error);
+        res.status(500).json({ message: 'Error creating question with parts' });
       }
 }
 
