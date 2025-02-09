@@ -8,9 +8,6 @@ const authRouter = require("./routes/authRoutes");
 // const testRouter = require("./routes/testRoutes")
 const questionRouter = require("./routes/questionRoutes")
 
-const { getRandomCategoryForUser, getRandomFeaturesForCategory } = require('./middlewares/questionMiddleware')
-const { isLoggedIn } = require('./middlewares/authMiddleware')
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
