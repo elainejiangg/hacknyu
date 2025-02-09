@@ -22,11 +22,10 @@ export function WebsiteViewerSmall({
           <span className="text-white/60">https://</span>
           <span
             className={`text-white/90 cursor-pointer ${
-              isSelected("url", -1) ? "bg-lime-400/30" : "hover:bg-lime-400/30"
+              isSelected("url", 1) ? "bg-lime-400/30" : "hover:bg-lime-400/30"
             }`}
             onClick={() => {
-              console.log("Clicked URL");
-              onSelect({ type: "url", index: -1 });
+              onSelect({ type: "url", index: 1 });
             }}
           >
             {url}
@@ -41,13 +40,12 @@ export function WebsiteViewerSmall({
             <div className="text-4xl font-bold text-blue-400 mb-2">
               <span
                 className={`cursor-pointer ${
-                  isSelected("title", -1)
+                  isSelected("title", 2)
                     ? "bg-lime-400/30"
                     : "hover:bg-lime-400/30"
                 }`}
                 onClick={() => {
-                  console.log("Clicked title");
-                  onSelect({ type: "title", index: -1 });
+                  onSelect({ type: "title", index: 2 });
                 }}
               >
                 {title}
