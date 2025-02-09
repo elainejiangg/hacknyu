@@ -13,7 +13,7 @@ export default function GamePage() {
 
       <div className="flex w-full h-full">
         {/* Left section - Game content (70% width) */}
-        <div className="w-[70%] p-6">
+        <div className="w-[70%] pl-8 pr-3 py-4">
           <Card className="h-full bg-white/5 border-white/10 p-6">
             <WebsiteChallenge />
             {/* <SMSChallenge /> */}
@@ -22,7 +22,7 @@ export default function GamePage() {
         </div>
 
         {/* Right section - Graphics (30% width) */}
-        <div className="w-[30%] p-6">
+        <div className="w-[30%] pl-3 pr-8 py-4">
           <Card className="h-full bg-white/5 border-white/10 p-6">
             {/* This will be your fish and hook graphics */}
             <div className="h-full flex items-center justify-center">

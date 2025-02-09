@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const db = require("./models"); // Loads models and Sequelize instance from index.js
 const session = require("express-session");
 const passport = require("./config/passport");
@@ -12,6 +13,14 @@ const { isLoggedIn } = require('./middlewares/authMiddleware')
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Add CORS first, before any other middleware
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 
 // Middleware to parse incoming requests
 // express.urlencoded() is a middleware that parses incoming
