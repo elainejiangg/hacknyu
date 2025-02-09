@@ -12,7 +12,7 @@ const UnderwaterParallax: React.FC = () => {
 
       setScrollValue((prev) => {
         const newValue = prev + e.deltaY * 0.1;
-        return Math.max(0, Math.min(newValue, 4180));
+        return Math.max(0, Math.min(newValue, 3180));
       });
     };
 
@@ -46,9 +46,9 @@ const UnderwaterParallax: React.FC = () => {
   const getBackgroundStyle = () => {
     const transitionProgress = Math.min(scrollValue / 500, 1);
     return {
-      background: `linear-gradient(to bottom, 
+      background: `linear-gradient(to bottom,
         rgb(0, 77, 122) ${20 - transitionProgress * 20}%,
-        rgb(0, 36, 56) ${60 - transitionProgress * 60}%, 
+        rgb(0, 36, 56) ${60 - transitionProgress * 60}%,
         #000000 ${100 - transitionProgress * 100}%)`,
     };
   };
@@ -263,8 +263,8 @@ const UnderwaterParallax: React.FC = () => {
               </h2>
 
               <button
-                className="font-pixel text-3xl text-white 
-                  border-2 border-white px-10 py-3 
+                className="font-pixel text-3xl text-white
+                  border-2 border-white px-10 py-3
                   hover:border-blue-300 hover:scale-105 hover:bg-white hover:text-blue-900
                   transition-all duration-300 ease-in-out
                   pointer-events-auto cursor-pointer

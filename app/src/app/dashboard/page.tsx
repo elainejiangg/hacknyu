@@ -36,6 +36,21 @@ function ExpBar({ current, max, label, level }: ExpBarProps) {
 export default function Dashboard() {
   const router = useRouter();
 
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        router.push("/login");
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black text-white">
       {/* Grid background overlay */}
@@ -49,6 +64,16 @@ export default function Dashboard() {
       >
         <span className="text-lg">⚙️</span>
         <span className="sr-only">Settings</span>
+      </Button>
+
+      {/* Logout button */}
+      <Button
+        variant="outline"
+        className="absolute border rounded border-white/20 top-6 text-black right-20 font-pixel border-white/20 text-white hover:bg-white/10 hover:text-white px-6"
+        onClick={handleLogout}
+      >
+        <span className="text-lg mr-2">🚪</span>
+        <span className="font-pixel">Logout</span>
       </Button>
 
       <div className="flex w-full h-full">
