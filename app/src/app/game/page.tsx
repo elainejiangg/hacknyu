@@ -14,11 +14,19 @@ import seaBackground from "../assets/Sea_extended.png";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
+const DIFFICULTY = {
+  EASY: { backgroundSize: "900px" },
+  MEDIUM: { backgroundSize: "600px" },
+  HARD: { backgroundSize: "200px" },
+} as const;
+
 export default function GamePage() {
   const router = useRouter();
 
   const [currentFish, setCurrentFish] = useState(0);
   const [position, setPosition] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [currentDifficulty, setCurrentDifficulty] = useState(DIFFICULTY.MEDIUM);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -31,7 +39,8 @@ export default function GamePage() {
   useEffect(() => {
     const interval = setInterval(() => {
       setPosition((prev) => {
-        return prev >= 100 ? 0 : prev + 10;
+        // Use a smoother transition with CSS transform
+        return (prev + 3) % 1000; // This creates a continuous loop without jumps
       });
     }, 50);
 
@@ -47,7 +56,7 @@ export default function GamePage() {
         {/* Left section - Game content (70% width) */}
         <div className="w-[70%] pl-8 pr-3 py-4">
           <Card className="h-full bg-white/5 border-white/10 p-12">
-            <WebsiteChallenge />
+            <EmailChallenge />
           </Card>
         </div>
 
@@ -86,7 +95,7 @@ export default function GamePage() {
                 <div
                   style={{
                     backgroundImage: `url(${seaBackground.src})`,
-                    backgroundSize: "1024px auto",
+                    backgroundSize: `${currentDifficulty.backgroundSize} auto`,
                     width: "1024px",
                     height: "100%",
                     imageRendering: "pixelated",
@@ -97,7 +106,19 @@ export default function GamePage() {
                 <div
                   style={{
                     backgroundImage: `url(${seaBackground.src})`,
-                    backgroundSize: "1024px auto",
+                    backgroundSize: `${currentDifficulty.backgroundSize} auto`,
+                    width: "1024px",
+                    height: "100%",
+                    imageRendering: "pixelated",
+                    position: "absolute",
+                    left: "1024px",
+                  }}
+                />
+
+                <div
+                  style={{
+                    backgroundImage: `url(${seaBackground.src})`,
+                    backgroundSize: `${currentDifficulty.backgroundSize} auto`,
                     width: "1024px",
                     height: "100%",
                     imageRendering: "pixelated",
