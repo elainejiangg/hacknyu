@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowedNull: false,
       },
+      order: {
+        type: DataTypes.INTEGER,
+        allowedNull: false,
+      },
       is_suspicious: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

@@ -7,13 +7,16 @@ exports.createQuestionWithParts = async (req, res, next) => {
         const questionId = req.questionId
         const questionContent = req.questionContent
 
+        let order = 1;
+
       // Function to create QuestionPart for a given content and feature name
-      const createQuestionPart = async (content) => {
+      const createQuestionPart = async (content, order) => {
         return await QuestionPart.create({
           question_id: questionId,
           is_suspicious: content.suspicious,
           reason: content.reason,
           user_answered_suspicious: false,
+          order: order,
         });
       };
 
@@ -25,12 +28,14 @@ exports.createQuestionWithParts = async (req, res, next) => {
           // If it's an array (e.g., body), treat each sentence as a separate part
           if (key === 'body') {
             for (const sentence of value) {
-              await createQuestionPart(sentence);
+              await createQuestionPart(sentence, order);
+              order += 1;
             }
           }
         } else if (value && typeof value === 'object') {
           // If it's an object (e.g., subject, sender, attachment), create a question part
-          await createQuestionPart(value);
+          await createQuestionPart(value, order);
+          order += 1;
         }
       }
 
@@ -44,8 +49,6 @@ exports.createQuestionWithParts = async (req, res, next) => {
       });
     }
   };
-
-
 
 
 exports.getAllCategoryExps = async (req, res) => {
