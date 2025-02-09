@@ -7,13 +7,18 @@ exports.generateQuestion = async (req, res) => {
 
     const userId = req.session.passport.user;
 
+    // choose category
     const category = await getRandomCategoryForUser(userId);
     const categoryId = category['category_id'];
+    const categoryName = category['category_name'];
 
+    // choose features (to be flagged as suspicious)
     const features = await getRandomFeaturesForCategory(categoryId);
     const selectedFeatureNames = features['selected_feature_names'];
     const nonSelectedFeatureNames = features['non_selected_feature_names'];
-    const questionParts = 
+
+    // generate questions with LLM
+    const questionParts = generatePhishingContent(categoryName, selectedFeatureNames, nonSelectedFeatureNames);
 
 }
 

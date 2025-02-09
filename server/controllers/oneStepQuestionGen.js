@@ -1,10 +1,10 @@
 const axios = require('axios');
 require('dotenv').config({ path: '../.env' });
 
-async function generatePhishingContent(selectedFeatures, unselectedFeatures) {
+async function generatePhishingContent(categoryName, selectedFeatures, unselectedFeatures) {
     const apiKey = process.env.OPENAI_API_KEY;
     const prompt = 
-    `Generate a phishing email as a JSON object with the following structure:
+    `Generate a phishing ${categoryName} as a JSON object with the following structure:
 {
   "subject": { "text": "<email subject>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
   "sender": { "text": "<email sender>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
@@ -42,11 +42,18 @@ Ensure that the features in ${JSON.stringify(selectedFeatures)} are highly suspi
 exports.generatePhishingContent;
 
 // Example usage:
+// const categoryName = "text"
 // const selectedFeatures = ["subject", "attachment"];
 // const unselectedFeatures = ["sender"];
-// generatePhishingEmail(selectedFeatures, unselectedFeatures)
+// generatePhishingEmail(categoryName, selectedFeatures, unselectedFeatures)
 //     .then(email => console.log(JSON.stringify(email, null, 2)))
 //     .catch(err => console.error(err));
+
+
+
+
+
+
 
 
 
