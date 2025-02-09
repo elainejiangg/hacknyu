@@ -67,6 +67,7 @@ export function EmailChallenge({
         attachments={challengeData.attachments}
         onSelect={handleSelect}
         isSelected={isSelected}
+        parts={parts} // Pass parts to map to id in EmailViewer
       />
     </ChallengeBase>
   );
