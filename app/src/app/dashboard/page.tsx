@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import fishNormalBubble1 from "../assets/Fish_Normal_Bubble1.png";
 
 interface CategoryExp {
   categoryId: number;
@@ -103,47 +104,49 @@ export default function Dashboard() {
     const category = categoryExps.find(
       (c) => c.categoryId === categoryMap[name.toLowerCase()]
     );
+    const exp = category?.exp || 0;
+
+    // Linear level calculation (old)
+    // level: Math.floor((exp || 0) / 25) + 1, // Level up every 25 exp
+
+    // Logarithmic level calculation
+    // Level = 1 + log2(exp/25 + 1)
+    // This means:
+    // 0 exp = level 1
+    // 25 exp = level 2
+    // 75 exp = level 3
+    // 175 exp = level 4
+    // 375 exp = level 5
+    // 775 exp = level 6
+    // etc...
+    const level = exp === 0 ? 1 : Math.floor(Math.log2(exp / 25 + 1)) + 1;
+
     return {
-      current: category?.exp || 0,
-      max: 100,
-      level: Math.floor((category?.exp || 0) / 25) + 1, // Level up every 25 exp
+      current: exp,
+      max: Math.pow(2, level) * 25 - 25, // Next level threshold
+      level: level,
     };
   };
 
   return (
     <div className="fixed inset-0 bg-black text-white">
-      {/* Grid background overlay */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
+      {/* Grid background overlay*/}
+      <div className="absolute inset-0 bg-grid-pattern opacity-30 pointer-events-none" />
 
       {/* Tutorial button */}
+
       <Button
         variant="outline"
         size="icon"
-        className="absolute bottom-6 right-6 rounded-full border-white/20 hover:bg-white/10"
+        className="absolute bottom-6 right-6 rounded-full border-white/20 hover:bg-white/10 text-white/50
+          border border-white/20 px-4 py-2
+          hover:border-white hover:text-white hover:scale-105
+          transition-all duration-300 ease-in-out
+          z-[9999] cursor-pointer text-sm rounded bg-black"
         onClick={() => router.push("/tutorial")}
       >
         <span className="text-lg">❓</span>
         <span className="sr-only">Tutorial</span>
-      </Button>
-
-      {/* Settings button */}
-      <Button
-        variant="outline"
-        size="icon"
-        className="absolute top-6 right-6 rounded-full border-white/20 hover:bg-white/10"
-      >
-        <span className="text-lg">⚙️</span>
-        <span className="sr-only">Settings</span>
-      </Button>
-
-      {/* Logout button */}
-      <Button
-        variant="outline"
-        className="absolute border rounded border-white top-6 right-20 font-pixel border-white/20 text-black hover:text-white hover:bg-white/10 px-6"
-        onClick={handleLogout}
-      >
-        <span className="text-lg mr-2">🚪</span>
-        <span className="font-pixel">Logout</span>
       </Button>
 
       <div className="flex w-full h-full">
@@ -173,23 +176,52 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        {/* Right section - Fish avatar and game button (2/3 width) */}
+        {/* Right section - Graphics (2/3 width) */}
         <div className="w-2/3 pl-3 pr-8 py-4">
-          <Card className="h-full bg-white/5 border-white/10 p-6 flex flex-col items-center justify-center gap-6">
+          <Card className="h-full bg-white/5 border-white/10 p-6 flex flex-col items-center justify-center gap-6 relative">
+            {/* Settings and Logout buttons in top-right */}
+            <div className="absolute top-4 right-4 flex gap-4">
+              <Button
+                className="font-pixel text-white/75 text-sm
+                  hover:text-white hover:scale-105
+                  transition-all duration-300 ease-in-out
+                  cursor-pointer bg-transparent
+                  hover:bg-transparent focus:bg-transparent active:bg-transparent"
+              >
+                Settings
+              </Button>
+              <Button
+                className="font-pixel text-white/75 text-sm
+                  hover:text-white hover:scale-105
+                  transition-all duration-300 ease-in-out
+                  cursor-pointer bg-transparent
+                  hover:bg-transparent focus:bg-transparent active:bg-transparent"
+                onClick={handleLogout}
+              >
+                Log Out →
+              </Button>
+            </div>
+
+            {/* Fish avatar and Start Fishing button */}
             <div className="relative">
               <span className="text-6xl mb-8 block text-center">🎣</span>
-              <div className="w-64 h-64 bg-white/10 rounded-full flex items-center justify-center">
+              <div className="w-64 h-64 rounded-full flex items-center justify-center">
                 <img
-                  src="/fish-avatar-placeholder.png"
+                  src={fishNormalBubble1.src}
                   alt="Fish Avatar"
-                  className="w-48 h-48 pixel-art"
+                  className="w-64 h-64 pixel-art"
                 />
               </div>
             </div>
 
             <Button
               size="lg"
-              className="w-1/2 font-pixel py-8 text-xl bg-white/10 hover:bg-white/20 border-white/20"
+              className="w-auto min-w-[200px] font-pixel py-6 text-white/90 px-8 text-2xl
+                hover:text-white hover:font-bold hover:scale-105
+                transition-all duration-300 ease-in-out
+                z-[9999] cursor-pointer
+                bg-transparent rounded
+                hover:bg-transparent focus:bg-transparent active:bg-transparent"
               onClick={() => router.push("/game")}
             >
               Start Fishing

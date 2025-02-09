@@ -18,7 +18,7 @@ export function WebsiteViewerMedium({
   isSelected,
 }: WebsiteViewerMediumProps) {
   return (
-    <div className="w-full bg-black/20 rounded-xl overflow-hidden border border-white/10">
+    <div className="w-full bg-black/50 rounded-xl overflow-hidden border border-white/10">
       {/* Browser chrome/toolbar */}
       <div className="bg-white/5 p-4 border-b border-white/10">
         <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 font-mono text-sm">

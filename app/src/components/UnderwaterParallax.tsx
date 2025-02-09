@@ -280,6 +280,20 @@ const UnderwaterParallax: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Add skip button */}
+        <button
+          className="fixed bottom-4 right-4 text-white/30 text-sm font-pixel
+            hover:text-white/60 transition-colors duration-300 z-[9999]
+            pointer-events-auto cursor-pointer"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            router.push("/dashboard");
+          }}
+        >
+          skip →
+        </button>
       </div>
     </div>
   );

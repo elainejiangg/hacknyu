@@ -25,9 +25,9 @@ export function WebsiteViewerLarge({
   isSelected,
 }: WebsiteViewerLargeProps) {
   return (
-    <div className="w-full bg-black/20 rounded-xl overflow-hidden border border-white/10">
+    <div className="w-full bg-black/50 rounded-xl overflow-hidden border border-white/10">
       {/* Browser chrome/toolbar */}
-      <div className="bg-white/5 p-4 border-b border-white/10">
+      <div className="bg-black/50 p-4 border-b border-white/10">
         <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 font-mono text-sm">
           <span className="text-white/60">https://</span>
           <span
@@ -119,8 +119,8 @@ export function WebsiteViewerLarge({
             <button
               className={`px-12 py-4 bg-blue-500 text-white text-lg rounded-lg font-medium cursor-pointer ${
                 isSelected("button", -1)
-                  ? "bg-lime-400/30"
-                  : "hover:bg-lime-400/30"
+                  ? "hover:bg-white/20"
+                  : "hover:bg-white/50"
               }`}
               onClick={() => {
                 console.log("Clicked button");

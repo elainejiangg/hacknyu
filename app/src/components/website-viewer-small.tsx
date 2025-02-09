@@ -14,7 +14,7 @@ export function WebsiteViewerSmall({
   isSelected,
 }: WebsiteViewerSmallProps) {
   return (
-    <div className="w-full bg-black/20 rounded-xl overflow-hidden border border-white/10">
+    <div className="w-full bg-black/50 rounded-xl overflow-hidden border border-white/10">
       {/* Browser chrome/toolbar */}
       <div className="bg-white/5 p-4 border-b border-white/10">
         {/* URL bar */}
