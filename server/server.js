@@ -6,18 +6,21 @@ const passport = require("./config/passport");
 require("dotenv").config();
 const authRouter = require("./routes/authRoutes");
 // const testRouter = require("./routes/testRoutes")
-const questionRouter = require("./routes/questionRoutes")
+const questionRouter = require("./routes/questionRoutes");
 
-const { getRandomCategoryForUser, getRandomFeaturesForCategory } = require('./middlewares/questionMiddleware')
-const { isLoggedIn } = require('./middlewares/authMiddleware')
+const {
+  getRandomCategoryForUser,
+  getRandomFeaturesForCategory,
+} = require("./middlewares/questionMiddleware");
+const { isLoggedIn } = require("./middlewares/authMiddleware");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3001; // Force port 3001
 
 // Add CORS first, before any other middleware
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3000", // Frontend URL
     credentials: true,
   })
 );
@@ -60,17 +63,17 @@ db.sequelize
     console.log("Models synced successfully.");
 
     // Register routes (uncomment and add your routes here)
-    app.get('/', async (req, res) => {
-      res.send('hello world')
-    })
+    app.get("/", async (req, res) => {
+      res.send("hello world");
+    });
     // app.get('/generate', isLoggedIn, getRandomCategoryForUser, getRandomFeaturesForCategory)
-    app.use('/auth', authRouter);
+    app.use("/auth", authRouter);
     // app.use('/test', testRouter);
-    app.use('/questions', questionRouter)
+    app.use("/questions", questionRouter);
 
     // Start the server after confirming the connection and sync
     app.listen(PORT, () => {
-      console.log(`Server is running on http://localhost:${PORT}`);
+      console.log(`Server running on http://localhost:${PORT}`);
     });
   })
   .catch((err) => {

@@ -19,26 +19,28 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
+    console.log("Attempting login with:", formData);
+
     try {
-      console.log("Sending data:", formData);
-      console.log("Sending data:", JSON.stringify(formData));
       const response = await fetch("http://localhost:3001/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
-        credentials: "include", // Important for cookies
+        credentials: "include",
       });
+
+      console.log("Response status:", response.status);
 
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.error || "Login failed");
       }
 
-      // Login successful
       router.push("/dashboard");
     } catch (err) {
+      console.error("Login error:", err);
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setLoading(false);
