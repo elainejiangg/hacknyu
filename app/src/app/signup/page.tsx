@@ -38,7 +38,7 @@ export default function SignUpPage() {
       }
 
       // Registration successful
-      router.push("/login");
+      router.push("/tutorial");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {

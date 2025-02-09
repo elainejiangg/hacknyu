@@ -56,6 +56,17 @@ export default function Dashboard() {
       {/* Grid background overlay */}
       <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
+      {/* Tutorial button */}
+      <Button
+        variant="outline"
+        size="icon"
+        className="absolute bottom-6 right-6 rounded-full border-white/20 hover:bg-white/10"
+        onClick={() => router.push("/tutorial")}
+      >
+        <span className="text-lg">❓</span>
+        <span className="sr-only">Tutorial</span>
+      </Button>
+
       {/* Settings button */}
       <Button
         variant="outline"
@@ -110,7 +121,7 @@ export default function Dashboard() {
         <div className="w-2/3 pl-3 pr-8 py-4">
           <Card className="h-full bg-white/5 border-white/10 p-6 flex flex-col items-center justify-center gap-6">
             <div className="relative">
-              <span className="text-6xl mb-8 block">🎣</span>
+              <span className="text-6xl mb-8 block text-center">🎣</span>
               <div className="w-64 h-64 bg-white/10 rounded-full flex items-center justify-center">
                 <img
                   src="/fish-avatar-placeholder.png"
