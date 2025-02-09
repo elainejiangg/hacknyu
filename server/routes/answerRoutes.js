@@ -5,7 +5,7 @@ const { calculateQuestionScore, getQuestionCategoryId } = require("../middleware
 const router = express.Router();
 
 // User can flag specific question parts as suspicious
-router.put('/:questionPartId/add-flag', isLoggedIn, flagQuestionPart)
+router.put('/:questionPartId/add-flag', flagQuestionPart)
 
 // This should execute after a user clicks the submit button
 router.put('/:questionId/score', isLoggedIn, calculateQuestionScore, getQuestionCategoryId, updateCategoryExp)
