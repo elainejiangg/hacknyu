@@ -3,7 +3,6 @@ const {
   Category,
   Feature,
   Question,
-  QuestionPart,
 } = require("../models");
 const axios = require("axios");
 require("dotenv").config({ path: "../.env" });
@@ -349,36 +348,3 @@ Ensure that the features in ${JSON.stringify(
 // generatePhishingEmail(selectedFeatures, unselectedFeatures)
 //     .then(email => console.log(JSON.stringify(email, null, 2)))
 //     .catch(err => console.error(err));
-
-
-// const prompt = `Generate a phishing ${categoryName} message with at least 3 different suspicious elements.
-//     Return ONLY a JSON object with this exact structure, no additional text:
-//     {
-//       "content": "your phishing message here",
-//       "features": [
-//         {
-//           "content": "first suspicious part from the message",
-//           "reason": "explanation of why this part is suspicious",
-//           "is_suspicious": true
-//         },
-//         {
-//           "content": "second suspicious part from the message",
-//           "reason": "explanation of why this part is suspicious",
-//           "is_suspicious": true
-//         },
-//         {
-//           "content": "third suspicious part from the message",
-//           "reason": "explanation of why this part is suspicious",
-//           "is_suspicious": true
-//         }
-//       ]
-//     }
-
-//     Ensure that the features in ${JSON.stringify(
-//       selectedFeatures
-//     )} are highly suspicious and provide explanations for why they are suspicious.
-//     Those in ${JSON.stringify(unselectedFeatures)} should be completely normal.
-//     The message should sound natural while aligning with these requirements.
-
-//     Each feature should identify a different suspicious element (like urgency, generic greeting, poor grammar, suspicious links, etc).
-//     The response must be valid JSON. Do not include any text outside the JSON object.`;

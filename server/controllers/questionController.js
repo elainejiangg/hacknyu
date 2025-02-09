@@ -173,18 +173,3 @@ exports.getAllCategoryExps = async (req, res) => {
     res.status(500).json({ message: "Error getting all exps" });
   }
 };
-
-
-// there should be middleware for submitting the response
-exports.updateCategoryExp = async (req, res) => {
-  const userId = req.userId;
-  const { categoryId } = req.params;
-  // middleware runs before this
-  // req.accuracy
-
-  try {
-  } catch (error) {
-    console.error("Error updating exp:", error);
-    res.status(500).json({ message: "Error updating exp" });
-  }
-};

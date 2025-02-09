@@ -3,7 +3,6 @@ const {
   createQuestionWithParts,
   getQuestionParts,
   getAllCategoryExps,
-  updateCategoryExp,
   getQuestionCategoryId
 } = require("../controllers/questionController");
 const { isLoggedIn } = require("../middlewares/authMiddleware");
@@ -43,9 +42,6 @@ router.get('/:questionId/questionParts', getQuestionParts)
 
 // Get all category exps for a user to display on their dashboard
 router.get("/exp", isLoggedIn, getAllCategoryExps);
-
-// Update category exp after a user answers a question
-router.put("/:categoryId", isLoggedIn, updateCategoryExp);
 
 // router.get('/submit-answer', isLoggedIn, submitAnswer)
 
