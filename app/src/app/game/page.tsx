@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { SMSChallenge } from "@/components/sms-challenge";
 import { WebsiteChallenge } from "@/components/website-challenge";
 import { EmailChallenge } from "@/components/email-challenge";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 // Import your assets
@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import HookBlack from "@/app/assets/Hook_Black.png";
 
 const DIFFICULTY = {
-  EASY: { backgroundSize: "900px" },
+  EASY: { backgroundSize: "1024px" },
   MEDIUM: { backgroundSize: "600px" },
   HARD: { backgroundSize: "200px" },
 } as const;
@@ -28,9 +28,90 @@ export default function GamePage() {
 
   const [currentFish, setCurrentFish] = useState(0);
   const [position, setPosition] = useState(0);
-  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [questionData, setQuestionData] = useState(null);
+  const [questionParts, setQuestionParts] = useState(null);
+  const [questionCategory, setQuestionCategory] = useState(null);
+  const [questionID, setQuestionID] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentDifficulty, setCurrentDifficulty] = useState(DIFFICULTY.MEDIUM);
   const [hookPosition, setHookPosition] = useState(-100); // Start above screen
+
+  const questionGenerated = useRef(false);
+
+  // generate Question
+  useEffect(() => {
+    const generateQuestion = async () => {
+      // If question was already generated, don't generate again
+      if (questionGenerated.current) return;
+
+      try {
+        questionGenerated.current = true; // Mark as generated before the fetch
+
+        const response = await fetch(
+          "http://localhost:3001/questions/generate-question",
+          {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to generate question");
+          setIsLoading(false);
+          return;
+        }
+        const data = await response.json();
+
+        console.log(data);
+        setQuestionData(data);
+        setQuestionID(data.questionId);
+        console.log(questionID);
+
+        const [partsResponse, categoryResponse] = await Promise.all([
+          fetch(
+            `http://localhost:3001/questions/${data.questionId}/questionParts`,
+            {
+              method: "GET",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          ),
+          fetch(`http://localhost:3001/questions/${data.questionId}/category`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }),
+        ]);
+
+        if (!partsResponse.ok || !categoryResponse.ok) {
+          throw new Error("Failed to fetch question details");
+          setIsLoading(false);
+          return;
+        }
+
+        const partsData = await partsResponse.json();
+        const categoryData = await categoryResponse.json();
+
+        setQuestionParts(partsData);
+        setQuestionCategory(categoryData.categoryId);
+        console.log("QUESTION CAT: ", questionCategory);
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error:", error);
+        setIsLoading(false);
+      }
+    };
+
+    generateQuestion();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -68,6 +149,15 @@ export default function GamePage() {
     return () => clearInterval(interval);
   }, []);
 
+  // Show loading state while fetching
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 bg-black text-white flex items-center justify-center">
+        <p className="font-pixel">Loading challenge...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 bg-black text-white">
       {/* Grid background overlay */}
@@ -77,7 +167,19 @@ export default function GamePage() {
         {/* Left section - Game content (70% width) */}
         <div className="w-[70%] pl-8 pr-3 py-4">
           <Card className="h-full bg-white/5 border-white/10 p-12">
-            <EmailChallenge />
+            {questionData && questionParts && questionCategory && (
+              <div>
+                {questionCategory === 1 && (
+                  <WebsiteChallenge data={questionData} parts={questionParts} />
+                )}
+                {questionCategory === 2 && (
+                  <SMSChallenge data={questionData} parts={questionParts} />
+                )}
+                {questionCategory === 3 && (
+                  <EmailChallenge data={questionData} parts={questionParts} />
+                )}
+              </div>
+            )}
           </Card>
         </div>
 

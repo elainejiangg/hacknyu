@@ -47,6 +47,7 @@ export default function Dashboard() {
   const router = useRouter();
   const [categoryExps, setCategoryExps] = useState<CategoryExp[]>([]);
   const [error, setError] = useState("");
+  const [currentQuestion, setCurrentQuestion] = useState<any>(null);
 
   useEffect(() => {
     const fetchExps = async () => {

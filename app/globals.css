@@ -1,0 +1,60 @@
+@keyframes scrollBackground {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -100px 0;
+  }
+}
+
+@keyframes floatAnimation {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes seaMovement {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(20px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes scrollSeaBackground {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -1020px 0;
+  }
+}
+
+@keyframes moveBackground {
+  0% {
+    background-position: 200px 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.animate-scroll-background {
+  animation: scrollSeaBackground 5s linear infinite;
+}
+
+.animate-float {
+  animation: floatAnimation 2s ease-in-out infinite;
+}
+
+.animate-sea {
+  animation: seaMovement 4s ease-in-out infinite;
+}
