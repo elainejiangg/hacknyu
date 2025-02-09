@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const { User } = require('../models');
+const { User, Category, UserCategory } = require('../models');
 const passport = require('passport');
 
 // Register a user
@@ -22,6 +22,17 @@ exports.registerUser = async (req, res) => {
         email,
         password: hashedPassword,
       });
+
+      // Set exp of user to 0 in all categories
+      const categories = await Category.findAll();
+
+      const userCategoryEntries = categories.map(category => ({
+        user_id: user.id,
+        category_id: category.id,
+        exp: 0,
+      }))
+      console.log('time to bulk create: ', userCategoryEntries)
+      await UserCategory.bulkCreate(userCategoryEntries);
 
       // Respond with the new user's info (but avoid sending the password)
       res.status(201).json({
