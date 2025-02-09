@@ -377,12 +377,14 @@ export default function GamePage() {
             </div>
 
             {/* Fish and Hook container */}
-            <div className="absolute bottom-[20%] left-1/2 -translate-x-1/2 w-[33%]">
+            <div className="absolute bottom-[20%] left-[60%] -translate-x-1/2 w-[33%]">
               {/* Hook */}
               <div
                 className="absolute left-[-75%] bottom-0 w-full transition-transform duration-300"
                 style={{
-                  transform: `translateY(${hookPosition}%)`,
+                  transform: `translateY(${hookPosition}px) translateY(${
+                    currentFish === 2 || currentFish === 3 ? "0px" : "5px"
+                  })`,
                 }}
               >
                 <Image
