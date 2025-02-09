@@ -8,7 +8,7 @@ import { useState } from "react";
 export default function LoginPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    email: "",
+    usernameOrEmail: "",
     password: "",
   });
   const [error, setError] = useState("");
@@ -20,6 +20,8 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      console.log("Sending data:", formData);
+      console.log("Sending data:", JSON.stringify(formData));
       const response = await fetch("http://localhost:3001/auth/login", {
         method: "POST",
         headers: {
@@ -79,9 +81,9 @@ export default function LoginPage() {
                 USERNAME/EMAIL
               </label>
               <input
-                id="email"
-                type="email"
-                value={formData.email}
+                id="usernameOrEmail"
+                type="text"
+                value={formData.usernameOrEmail}
                 onChange={handleChange}
                 className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg font-pixel text-white focus:outline-none focus:border-white/40"
                 required
