@@ -69,7 +69,7 @@ export default function Dashboard() {
       {/* Logout button */}
       <Button
         variant="outline"
-        className="absolute border rounded border-white/20 top-6 text-black right-20 font-pixel border-white/20 text-white hover:bg-white/10 hover:text-white px-6"
+        className="absolute border rounded border-white top-6 right-20 font-pixel border-white/20 text-black hover:text-white hover:bg-white/10 px-6"
         onClick={handleLogout}
       >
         <span className="text-lg mr-2">🚪</span>
