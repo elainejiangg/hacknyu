@@ -29,7 +29,8 @@ router.get(
       next(error);
     }
   },
-  generatePhishingContent
+  generatePhishingContent,
+  createQuestionWithParts
 );
 
 // Get all category exps for a user to display on their dashboard

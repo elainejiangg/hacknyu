@@ -106,6 +106,7 @@ exports.getRandomFeaturesForCategory = async (req, res, next) => {
 
     // Randomly determine how many features to select (between 1 and all available)
     const numToSelect = Math.floor(Math.random() * features.length) + 1;
+    console.log("Num features selected: ", numToSelect)
 
     // Shuffle the features array randomly
     const shuffledFeatures = features.sort(() => Math.random() - 0.5);
@@ -172,37 +173,7 @@ exports.generatePhishingContent = async (req, res, next) => {
     const unselectedFeatures = req.features.non_selected_feature_names;
 
     // generate prompt for OpenAI to request multiple features
-    const prompt = `Generate a phishing ${categoryName} message with at least 3 different suspicious elements.
-    Return ONLY a JSON object with this exact structure, no additional text:
-    {
-      "content": "your phishing message here",
-      "features": [
-        {
-          "content": "first suspicious part from the message",
-          "reason": "explanation of why this part is suspicious",
-          "is_suspicious": true
-        },
-        {
-          "content": "second suspicious part from the message",
-          "reason": "explanation of why this part is suspicious",
-          "is_suspicious": true
-        },
-        {
-          "content": "third suspicious part from the message",
-          "reason": "explanation of why this part is suspicious",
-          "is_suspicious": true
-        }
-      ]
-    }
-
-    Ensure that the features in ${JSON.stringify(
-      selectedFeatures
-    )} are highly suspicious and provide explanations for why they are suspicious.
-    Those in ${JSON.stringify(unselectedFeatures)} should be completely normal.
-    The message should sound natural while aligning with these requirements.
-
-    Each feature should identify a different suspicious element (like urgency, generic greeting, poor grammar, suspicious links, etc).
-    The response must be valid JSON. Do not include any text outside the JSON object.`;
+    const prompt = await getPrompt(categoryName, selectedFeatures, unselectedFeatures)
 
     // Send request to OpenAI API
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -256,40 +227,47 @@ exports.generatePhishingContent = async (req, res, next) => {
     // Create the question
     const question = await Question.create({
       user_category_junction_id: userCategory.id,
-      question_content: parsedContent.content,
+      question_content: parsedContent,
     });
+
+    console.log("Question: ", question)
+
+    req.questionId = question.id;
+    req.questionContent = question.question_content;
+    console.log('I am here')
+    next();
 
     // Create question parts
-    const questionParts = await Promise.all(
-      parsedContent.features.map(async (feature) => {
+    // const questionParts = await Promise.all(
+    //   parsedContent.features.map(async (feature) => {
         // First create or find the Feature record
-        const [featureRecord] = await Feature.findOrCreate({
-          where: {
-            name: feature.content,
-            category_id: categoryId,
-          },
-          defaults: {
-            description: feature.reason,
-          },
-        });
+        // no more feature record plzzzz
+        // const [featureRecord] = await Feature.findOrCreate({
+        //   where: {
+        //     name: feature.content,
+        //     category_id: categoryId,
+        //   },
+        //   defaults: {
+        //     description: feature.reason,
+        //   },
+        // });
 
         // Then create the QuestionPart
-        return await QuestionPart.create({
-          question_id: question.id,
-          feature_id: featureRecord.id,
-          content: feature.content,
-          is_suspicious: true,
-          reason: feature.reason,
-        });
-      })
-    );
+    //     return await QuestionPart.create({
+    //       question_id: question.id,
+    //       content: feature.content,
+    //       is_suspicious: true,
+    //       reason: feature.reason,
+    //     });
+    //   })
+    // );
 
     // Return both question and its parts
-    return res.status(201).json({
-      category: categoryName,
-      question,
-      questionParts,
-    });
+    // return res.status(201).json({
+    //   category: categoryName,
+    //   question,
+    //   questionParts,
+    // });
   } catch (error) {
     console.error("Error generating phishing content:", error);
     return res.status(500).json({
@@ -402,3 +380,36 @@ Ensure that the features in ${JSON.stringify(
 // generatePhishingEmail(selectedFeatures, unselectedFeatures)
 //     .then(email => console.log(JSON.stringify(email, null, 2)))
 //     .catch(err => console.error(err));
+
+
+// const prompt = `Generate a phishing ${categoryName} message with at least 3 different suspicious elements.
+//     Return ONLY a JSON object with this exact structure, no additional text:
+//     {
+//       "content": "your phishing message here",
+//       "features": [
+//         {
+//           "content": "first suspicious part from the message",
+//           "reason": "explanation of why this part is suspicious",
+//           "is_suspicious": true
+//         },
+//         {
+//           "content": "second suspicious part from the message",
+//           "reason": "explanation of why this part is suspicious",
+//           "is_suspicious": true
+//         },
+//         {
+//           "content": "third suspicious part from the message",
+//           "reason": "explanation of why this part is suspicious",
+//           "is_suspicious": true
+//         }
+//       ]
+//     }
+
+//     Ensure that the features in ${JSON.stringify(
+//       selectedFeatures
+//     )} are highly suspicious and provide explanations for why they are suspicious.
+//     Those in ${JSON.stringify(unselectedFeatures)} should be completely normal.
+//     The message should sound natural while aligning with these requirements.
+
+//     Each feature should identify a different suspicious element (like urgency, generic greeting, poor grammar, suspicious links, etc).
+//     The response must be valid JSON. Do not include any text outside the JSON object.`;

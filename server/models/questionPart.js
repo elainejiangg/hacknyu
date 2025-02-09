@@ -11,10 +11,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowedNull: false,
       },
-      feature_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
       is_suspicious: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
