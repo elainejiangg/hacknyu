@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Selection } from "@/types/challenge";
 
@@ -11,6 +11,15 @@ interface ChallengeProps {
   selectedElements: Selection[];
   possibleRedFlags: number;
   onSelect: (selection: Selection) => void;
+  parts: {
+    id: number;
+    question_id: number;
+    order: number;
+    question_part_content: string;
+    is_suspicious: boolean;
+    user_answered_suspicious: boolean;
+    reason?: string; // Make reason optional
+  }[];
 }
 
 export function ChallengeBase({
@@ -20,15 +29,24 @@ export function ChallengeBase({
   selectedElements,
   possibleRedFlags,
   onSelect,
+  parts = [],
 }: ChallengeProps) {
+  const [showAnswers, setShowAnswers] = useState(false);
+
   const handleSelect = (selection: Selection) => {
-    if (
-      selection.type !== "submit" &&
-      selectedElements.length >= possibleRedFlags
-    ) {
+    if (selection.type === "submit") {
+      setShowAnswers(true); // Just show answers
+      return; // Don't call onSelect for submit
+    }
+
+    if (selectedElements.length >= possibleRedFlags) {
       return; // Prevent selecting more elements than possible flags
     }
     onSelect(selection);
+  };
+
+  const handleSubmit = () => {
+    setShowAnswers(true);
   };
 
   return (
@@ -38,7 +56,7 @@ export function ChallengeBase({
           <h2 className="text-xl font-pixel">{title}</h2>
           <button
             className="px-4 py-2 border border-white/40 text-white rounded font-pixel hover:bg-white/20 transition-colors"
-            onClick={() => handleSelect({ type: "submit" })}
+            onClick={() => handleSelect({ type: "submit", index: 0 })}
           >
             Submit
           </button>
@@ -56,6 +74,26 @@ export function ChallengeBase({
           {children}
         </div>
       </div>
+      {showAnswers && parts && (
+        <div className="mt-8 p-4 bg-black/30 rounded-lg">
+          <h3 className="font-pixel text-lg mb-4">
+            Suspicious Elements Explained:
+          </h3>
+          {parts
+            .filter((part) => part.is_suspicious)
+            .map((part, index) => (
+              <div
+                key={index}
+                className="mb-4 p-3 border border-white/20 rounded"
+              >
+                <p className="font-mono text-white/90">
+                  "{part.question_part_content}"
+                </p>
+                <p className="mt-2 text-white/70">🚩 {part.reason}</p>
+              </div>
+            ))}
+        </div>
+      )}
     </div>
   );
 }

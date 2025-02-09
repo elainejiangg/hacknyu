@@ -10,6 +10,7 @@ export type Selection = {
     | "footer"
     | "message"
     | "content"
-    | "url";
+    | "url"
+    | "submit";
   index: number;
 };
