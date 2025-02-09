@@ -1,4 +1,6 @@
 const { UserCategory, Category, Feature } = require('../models');
+const axios = require('axios');
+require('dotenv').config({ path: '../.env' });
 
 // category chosen should be weighted by user exp in each category and some amount of randomness
 exports.getRandomCategoryForUser = async(req, res, next) => {
@@ -31,6 +33,7 @@ exports.getRandomCategoryForUser = async(req, res, next) => {
             return { category_id: category.id, score };
           });
         console.log('category scores: ', categoryScores)
+
         // find the max score to normalize the weights
         const maxScore = Math.max(...categoryScores.map(score => score.score));
 
@@ -82,7 +85,7 @@ exports.getRandomFeaturesForCategory = async (req, res, next) => {
           non_selected_feature_ids: [],
           non_selected_feature_names: []
         };
-        next();  // Move to the next middleware or route handler
+        return res.status(404).json({ message: "No features were found." })  // Move to the next middleware or route handler
       }
 
       // Randomly determine how many features to select (between 1 and all available)
@@ -109,3 +112,103 @@ exports.getRandomFeaturesForCategory = async (req, res, next) => {
       return res.status(500).json({ message: 'Error fetching features' });
     }
   };
+
+
+// actually generate the content
+exports.generatePhishingContent = async (req, res, next) => {
+  const category = await Category.findOne({ where: {id: req.selectedCategoryId} });
+  const categoryName = category.name;
+  const selectedFeatures = req.features.selected_feature_names;
+  const unselectedFeatures = req.features.non_selected_feature_names;
+  const apiKey = process.env.OPENAI_API_KEY;
+  const prompt = `Generate a phishing ${categoryName} as a JSON object with the following structure:
+{
+"subject": { "text": "<email subject>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
+"sender": { "text": "<email sender>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
+"attachment": { "text": "<attachment details>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
+"body": [
+  { "text": "<sentence 1>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
+  { "text": "<sentence 2>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
+  ...
+]
+}
+Ensure that the features in ${JSON.stringify(selectedFeatures)} are highly suspicious and provide explanations for why they are suspicious. Those in ${JSON.stringify(unselectedFeatures)} should be completely normal. The email should sound natural while aligning with these requirements.`;
+  console.log('i generated a prompt')
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+          model: "gpt-4",
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.7
+      })
+  });
+
+  if (!response.ok) {
+      throw new Error("Failed to generate phishing email");
+  }
+
+  const data = await response.json();
+  const phishingEmail = data.choices[0].message.content;
+  return res.status(200).json(JSON.parse(phishingEmail));
+}
+
+
+// Example usage:
+// const categoryName = "text"
+// const selectedFeatures = ["subject", "attachment"];
+// const unselectedFeatures = ["sender"];
+// generatePhishingEmail(categoryName, selectedFeatures, unselectedFeatures)
+//     .then(email => console.log(JSON.stringify(email, null, 2)))
+//     .catch(err => console.error(err));
+
+
+
+
+
+// async function generatePhishingEmail(selectedFeatures, unselectedFeatures) {
+//     const apiKey = process.env.OPENAI_API_KEY;
+//     const prompt = `Generate a phishing email as a JSON object with the following structure:
+// {
+//   "subject": { "text": "<email subject>", "suspicious": <true/false> },
+//   "sender": { "text": "<email sender>", "suspicious": <true/false> },
+//   "attachment": { "text": "<attachment details>", "suspicious": <true/false> },
+//   "body": [
+//     { "text": "<sentence 1>", "suspicious": <true/false> },
+//     { "text": "<sentence 2>", "suspicious": <true/false> },
+//     ...
+//   ]
+// }
+// Ensure that the features in ${JSON.stringify(selectedFeatures)} are highly suspicious and those in ${JSON.stringify(unselectedFeatures)} are completely normal. The email should sound natural while aligning with these requirements.`;
+
+//     const response = await fetch("https://api.openai.com/v1/chat/completions", {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Authorization": `Bearer ${apiKey}`
+//         },
+//         body: JSON.stringify({
+//             model: "gpt-4",
+//             messages: [{ role: "user", content: prompt }],
+//             temperature: 0.7
+//         })
+//     });
+
+//     if (!response.ok) {
+//         throw new Error("Failed to generate phishing email");
+//     }
+
+//     const data = await response.json();
+//     const phishingEmail = data.choices[0].message.content;
+//     return JSON.parse(phishingEmail);
+// }
+
+// // Example usage:
+// const selectedFeatures = ["subject", "attachment"];
+// const unselectedFeatures = ["sender"];
+// generatePhishingEmail(selectedFeatures, unselectedFeatures)
+//     .then(email => console.log(JSON.stringify(email, null, 2)))
+//     .catch(err => console.error(err));

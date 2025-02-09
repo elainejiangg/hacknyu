@@ -1,10 +1,10 @@
 const express = require('express');
 const {  } = require('../controllers/questionController');
 const { isLoggedIn } = require('../middlewares/authMiddleware');
-const { getRandomCategoryForUser, getRandomFeaturesForCategory } = require('../middlewares/questionMiddleware')
+const { getRandomCategoryForUser, getRandomFeaturesForCategory, generatePhishingContent } = require('../middlewares/questionMiddleware')
 const router = express.Router();
 
-router.get('/generate-question', isLoggedIn, getRandomCategoryForUser, getRandomFeaturesForCategory)
+router.get('/generate-question', isLoggedIn, getRandomCategoryForUser, getRandomFeaturesForCategory, generatePhishingContent)
 
 // router.get('/submit-answer', isLoggedIn, submitAnswer)
 

@@ -2,27 +2,52 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function LoginPage() {
-  const [error, setError] = useState("");
-  const [loginData, setLoginData] = useState({
-    identifier: "", // for either username or email
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    email: "",
     password: "",
   });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!loginData.identifier) {
-      setError("Please enter your username or email");
-      return;
-    }
-    if (!loginData.password) {
-      setError("Password is required");
-      return;
-    }
     setError("");
-    // Handle login logic here
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:3001/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+        credentials: "include", // Important for cookies
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Login failed");
+      }
+
+      // Login successful
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
   };
 
   return (
@@ -37,24 +62,29 @@ export default function LoginPage() {
           </h1>
 
           {error && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-500 px-4 py-2 rounded">
+              {error}
+            </div>
+          )}
+
+          {error && (
             <div className="text-red-400 text-sm font-pixel text-center">
               {error}
             </div>
           )}
 
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-pixel" htmlFor="identifier">
                 USERNAME/EMAIL
               </label>
               <input
-                id="identifier"
-                type="text"
-                value={loginData.identifier}
-                onChange={(e) =>
-                  setLoginData({ ...loginData, identifier: e.target.value })
-                }
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg font-pixel text-white focus:outline-none focus:border-white/40"
+                required
               />
             </div>
 
@@ -65,24 +95,24 @@ export default function LoginPage() {
               <input
                 id="password"
                 type="password"
-                value={loginData.password}
-                onChange={(e) =>
-                  setLoginData({ ...loginData, password: e.target.value })
-                }
+                value={formData.password}
+                onChange={handleChange}
                 className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg font-pixel text-white focus:outline-none focus:border-white/40"
+                required
               />
             </div>
 
             <Button
               className="w-full font-pixel py-6 bg-white/10 hover:bg-white/20 border-white/20 mt-6"
               type="submit"
+              disabled={loading}
             >
-              LOG IN
+              {loading ? "LOGGING IN..." : "LOG IN"}
             </Button>
           </form>
 
           <div className="text-center text-sm font-pixel text-white/60">
-            Need an account?{" "}
+            Don't have an account?{" "}
             <a href="/signup" className="text-white hover:underline">
               Sign up
             </a>
