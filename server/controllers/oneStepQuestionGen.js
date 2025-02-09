@@ -3,20 +3,7 @@ require('dotenv').config({ path: '../.env' });
 
 async function generatePhishingContent(categoryName, selectedFeatures, unselectedFeatures) {
     const apiKey = process.env.OPENAI_API_KEY;
-    const prompt = 
-    `Generate a phishing ${categoryName} as a JSON object with the following structure:
-{
-  "subject": { "text": "<email subject>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
-  "sender": { "text": "<email sender>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
-  "attachment": { "text": "<attachment details>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
-  "body": [
-    { "text": "<sentence 1>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
-    { "text": "<sentence 2>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
-    ...
-  ]
-}
-Ensure that the features in ${JSON.stringify(selectedFeatures)} are highly suspicious and provide explanations for why they are suspicious. Those in ${JSON.stringify(unselectedFeatures)} should be completely normal. The email should sound natural while aligning with these requirements.`;
-
+    const prompt = await getPrompt(categoryName, selectedFeatures, unselectedFeatures);
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -31,7 +18,7 @@ Ensure that the features in ${JSON.stringify(selectedFeatures)} are highly suspi
     });
 
     if (!response.ok) {
-        throw new Error("Failed to generate phishing email");
+        throw new Error("Failed to generate phishing content.");
     }
 
     const data = await response.json();
@@ -39,19 +26,61 @@ Ensure that the features in ${JSON.stringify(selectedFeatures)} are highly suspi
     return JSON.parse(phishingEmail);
 }
 
-exports.generatePhishingContent;
+
+async function getPrompt(categoryName, selectedFeatures, unselectedFeatures) {
+    if (categoryName === "Email") {
+        return `Generate a phishing email as a JSON object with the following structure:
+{
+  "subject": { "text": "<email subject>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
+  "sender": { "text": "<email sender>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
+  "attachment": { "text": "<attachment details>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
+  "body": [
+    { "text": "<sentence 1>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
+    { "text": "<sentence 2>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
+    ...
+  ]
+}
+Ensure that the features in ${JSON.stringify(selectedFeatures)} are highly suspicious and provide explanations for why they are suspicious. Those in ${JSON.stringify(unselectedFeatures)} should be completely normal. The email should sound natural while aligning with these requirements.`;
+    }
+
+    else if (categoryName === "Text (SMS)") {
+return `Generate a phishing text message as a JSON object with the following structure:
+{
+  "sender": { "text": "<phone number or email address>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
+  "body": [
+    { "text": "<sentence 1>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
+    { "text": "<sentence 2>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
+    ...
+  ]
+}
+Ensure that the features in ${JSON.stringify(selectedFeatures)} are highly suspicious and provide explanations for why they are suspicious. Those in ${JSON.stringify(unselectedFeatures)} should be completely normal. The email should sound natural while aligning with these requirements.`;
+    }
+
+    else if (categoryName === "Website") {
+return `Generate a phishing website as a JSON object with the following structure:
+{
+  "url": { "text": "<website URL>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" },
+  "site_name": { "text": "<site name>", "suspicious": <true/false>, "reason": "<why it is suspicious if true>" }
+}
+Ensure that the features in ${JSON.stringify(selectedFeatures)} are highly suspicious and provide explanations for why they are suspicious. Those in ${JSON.stringify(unselectedFeatures)} should be completely normal. The email should sound natural while aligning with these requirements.`;
+    }
+
+    else {
+        return "";
+    }
+
+}
+
+
+// exports.generatePhishingContent;
 
 // Example usage:
-// const categoryName = "text"
-// const selectedFeatures = ["subject", "attachment"];
-// const unselectedFeatures = ["sender"];
-// generatePhishingEmail(categoryName, selectedFeatures, unselectedFeatures)
-//     .then(email => console.log(JSON.stringify(email, null, 2)))
-//     .catch(err => console.error(err));
-
-
-
-
+const categoryName = "Text (SMS)"
+const selectedFeatures = ["sender"];
+const unselectedFeatures = [];
+generatePhishingContent(categoryName, selectedFeatures, unselectedFeatures)
+    .then(email => console.log(JSON.stringify(email, null, 2)))
+    .catch(err => console.error(err));
 
 
 
