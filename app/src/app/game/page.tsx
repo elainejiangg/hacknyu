@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { SMSChallenge } from "@/components/sms-challenge";
 import { WebsiteChallenge } from "@/components/website-challenge";
 import { EmailChallenge } from "@/components/email-challenge";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 // Import your assets
@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import HookBlack from "@/app/assets/Hook_Black.png";
 
 const DIFFICULTY = {
-  EASY: { backgroundSize: "1024px" },
+  EASY: { backgroundSize: "900px" },
   MEDIUM: { backgroundSize: "600px" },
   HARD: { backgroundSize: "200px" },
 } as const;
@@ -28,90 +28,9 @@ export default function GamePage() {
 
   const [currentFish, setCurrentFish] = useState(0);
   const [position, setPosition] = useState(0);
-  const [questionData, setQuestionData] = useState(null);
-  const [questionParts, setQuestionParts] = useState(null);
-  const [questionCategory, setQuestionCategory] = useState(null);
-  const [questionID, setQuestionID] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
   const [currentDifficulty, setCurrentDifficulty] = useState(DIFFICULTY.MEDIUM);
   const [hookPosition, setHookPosition] = useState(-100); // Start above screen
-
-  const questionGenerated = useRef(false);
-
-  // generate Question
-  useEffect(() => {
-    const generateQuestion = async () => {
-      // If question was already generated, don't generate again
-      if (questionGenerated.current) return;
-
-      try {
-        questionGenerated.current = true; // Mark as generated before the fetch
-
-        const response = await fetch(
-          "http://localhost:3001/questions/generate-question",
-          {
-            method: "GET",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to generate question");
-          setIsLoading(false);
-          return;
-        }
-        const data = await response.json();
-
-        console.log(data);
-        setQuestionData(data);
-        setQuestionID(data.questionId);
-        console.log(questionID);
-
-        const [partsResponse, categoryResponse] = await Promise.all([
-          fetch(
-            `http://localhost:3001/questions/${data.questionId}/questionParts`,
-            {
-              method: "GET",
-              credentials: "include",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          ),
-          fetch(`http://localhost:3001/questions/${data.questionId}/category`, {
-            method: "GET",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }),
-        ]);
-
-        if (!partsResponse.ok || !categoryResponse.ok) {
-          throw new Error("Failed to fetch question details");
-          setIsLoading(false);
-          return;
-        }
-
-        const partsData = await partsResponse.json();
-        const categoryData = await categoryResponse.json();
-
-        setQuestionParts(partsData);
-        setQuestionCategory(categoryData.categoryId);
-        console.log("QUESTION CAT: ", questionCategory);
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error:", error);
-        setIsLoading(false);
-      }
-    };
-
-    generateQuestion();
-  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -126,8 +45,11 @@ export default function GamePage() {
   useEffect(() => {
     const interval = setInterval(() => {
       setPosition((prev) => {
-        // Use a smoother transition with CSS transform
-        return (prev + 3) % 1000; // This creates a continuous loop without jumps
+        // Reset earlier, before reaching the end
+        if (prev >= 290) {
+          return 0;
+        }
+        return prev + 1;
       });
     }, 50);
 
@@ -149,15 +71,6 @@ export default function GamePage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Show loading state while fetching
-  if (isLoading) {
-    return (
-      <div className="fixed inset-0 bg-black text-white flex items-center justify-center">
-        <p className="font-pixel">Loading challenge...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="fixed inset-0 bg-black text-white">
       {/* Grid background overlay */}
@@ -167,19 +80,7 @@ export default function GamePage() {
         {/* Left section - Game content (70% width) */}
         <div className="w-[70%] pl-8 pr-3 py-4">
           <Card className="h-full bg-white/5 border-white/10 p-12">
-            {questionData && questionParts && questionCategory && (
-              <div>
-                {questionCategory === 1 && (
-                  <WebsiteChallenge data={questionData} parts={questionParts} />
-                )}
-                {questionCategory === 2 && (
-                  <SMSChallenge data={questionData} parts={questionParts} />
-                )}
-                {questionCategory === 3 && (
-                  <EmailChallenge data={questionData} parts={questionParts} />
-                )}
-              </div>
-            )}
+            <EmailChallenge />
           </Card>
         </div>
 
@@ -203,52 +104,72 @@ export default function GamePage() {
             {/* Graphics content */}
             {/* Sea background */}
             <div className="absolute inset-0" style={{ overflow: "hidden" }}>
+              {/* Static background layer */}
               <div
-                className="w-full h-full"
                 style={{
-                  position: "relative",
-                  width: "2048px",
-                  height: "1080px",
-                  minHeight: "1080px",
-                  transform: `translateX(${-position}px)`,
-                  transition: "transform 50ms linear",
-                  display: "flex",
+                  position: "absolute",
+                  inset: 0,
+                  backgroundImage: `url(${seaBackground.src})`,
+                  backgroundSize: "600px 3000px",
+                  imageRendering: "pixelated",
+                }}
+              />
+
+              {/* Moving layer */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
                 }}
               >
                 <div
                   style={{
-                    backgroundImage: `url(${seaBackground.src})`,
-                    backgroundSize: `${currentDifficulty.backgroundSize} auto`,
-                    width: "1024px",
-                    height: "100%",
-                    imageRendering: "pixelated",
                     position: "absolute",
-                    left: "0px",
-                  }}
-                />
-                <div
-                  style={{
-                    backgroundImage: `url(${seaBackground.src})`,
-                    backgroundSize: `${currentDifficulty.backgroundSize} auto`,
-                    width: "1024px",
+                    inset: 0,
+                    width: "1800px",
                     height: "100%",
-                    imageRendering: "pixelated",
-                    position: "absolute",
-                    left: "1024px",
+                    transform: `translateX(${position}px)`,
+                    transition: "none", // Remove all transitions
+                    display: "flex",
                   }}
-                />
-
-                <div
-                  style={{
-                    backgroundImage: `url(${seaBackground.src})`,
-                    backgroundSize: `${currentDifficulty.backgroundSize} auto`,
-                    width: "1024px",
-                    height: "100%",
-                    imageRendering: "pixelated",
-                    position: "absolute",
-                    left: "1024px",
-                  }}
-                />
+                >
+                  <div
+                    style={{
+                      backgroundImage: `url(${seaBackground.src})`,
+                      backgroundSize: "600px 3000px",
+                      width: "600px",
+                      height: "100%",
+                      imageRendering: "pixelated",
+                      position: "absolute",
+                      left: "0px",
+                      transition: "none",
+                    }}
+                  />
+                  <div
+                    style={{
+                      backgroundImage: `url(${seaBackground.src})`,
+                      backgroundSize: "600px 3000px",
+                      width: "600px",
+                      height: "100%",
+                      imageRendering: "pixelated",
+                      position: "absolute",
+                      left: "-590px",
+                      transition: "none",
+                    }}
+                  />
+                  <div
+                    style={{
+                      backgroundImage: `url(${seaBackground.src})`,
+                      backgroundSize: "600px 3000px",
+                      width: "600px",
+                      height: "100%",
+                      imageRendering: "pixelated",
+                      position: "absolute",
+                      left: "-1180px",
+                      transition: "none",
+                    }}
+                  />
+                </div>
               </div>
             </div>
 
