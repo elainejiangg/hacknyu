@@ -36,16 +36,14 @@ Players do not have a formal leveling system yet (this is a planned feature for 
 We used the following technologies to build *Phabulous Phishes*:
 - **Frontend:** Built with **Next.js** and **Tailwind CSS** for a responsive, modern UI.
 - **Backend:** Powered by **Node.js** and **PostgreSQL**, with **Sequelize** as the ORM.
-- **AI:** We use **OpenAI** to generate phishing content. The content is structured into parts (e.g., sender, subject, body, URL) and labeled as suspicious or not.
-- **Deployment:** The backend is hosted on **AWS EC2**, the frontend on **Vercel**, and the database is managed with **AWS RDS**.
+- **AI:** We used **OpenAI** to generate phishing content. The content is structured into parts (e.g., sender, subject, body, URL) and labeled as suspicious or not.
 
 The game includes an algorithm that generates phishing content dynamically based on the player’s experience, ensuring they are always challenged in areas where they need improvement.
 
 ## Challenges we ran into
 
-- **Fine-tuning AI content:** We needed to adjust the prompts for OpenAI to ensure that the generated phishing content was realistic and fit the educational objectives.
+- **Fine-tuning AI content:** We needed to adjust the prompts for OpenAI to ensure that the generated phishing scenarios (email, SMS text, website) were realistic and aligned with the educational objectives. One of the main challenges was ensuring these scenarios fit properly into the templates we created and were structured in a way that could be seamlessly parsed and passed into the frontend.
 - **Difficulty balancing:** Ensuring the game remained challenging but not overwhelming was crucial. We had to carefully structure the levels and gradually introduce new phishing elements to make the learning curve smooth.
-- **Cloud infrastructure:** Optimizing for scalability and performance while keeping costs manageable was a challenge when deploying the system on AWS.
 
 ## Accomplishments we're proud of
 
@@ -55,9 +53,9 @@ The game includes an algorithm that generates phishing content dynamically based
 
 ## What we learned
 
-- **AI-driven content generation:** We gained deep insights into fine-tuning models for specific tasks, particularly generating phishing content that aligns with educational goals.
+- **AI-driven content generation:** We focused on prompt engineering to generate structured phishing scenarios (email, SMS text, website) that aligned with our educational goals. The challenge was ensuring these scenarios could be parsed correctly and integrated into the frontend for a smooth user experience.
+- **Backend integration:** A major challenge was integrating OpenAI's responses into the backend, ensuring that everything ran in order. Debugging asynchronous API calls with multiple middleware proved to be difficult, as the interactions between the different layers of the backend were complex and required careful synchronization.
 - **Gamification in education:** We learned how to balance fun and learning by creating a personalized content delivery system based on user experience.
-- **Cloud deployment and scalability:** We learned how to deploy a scalable system using AWS services, ensuring that the backend and database can handle large numbers of users.
 
 ## What's next for Phabulous Phishes
 
