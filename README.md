@@ -9,7 +9,6 @@ The game tracks players' **experience points (exp)** in different categories and
 - [Inspiration](#inspiration)
 - [What it does](#what-it-does)
 - [How we built it](#how-we-built-it)
-- [Challenges we ran into](#challenges-we-ran-into)
 - [Accomplishments we're proud of](#accomplishments-we're-proud-of)
 - [What we learned](#what-we-learned)
 - [What's next for Phabulous Phishes](#whats-next-for-phabulous-phishes)
@@ -39,11 +38,6 @@ We used the following technologies to build *Phabulous Phishes*:
 - **AI:** We used **OpenAI** to generate phishing content. The content is structured into parts (e.g., sender, subject, body, URL) and labeled as suspicious or not.
 
 The game includes an algorithm that generates phishing content dynamically based on the player’s experience, ensuring they are always challenged in areas where they need improvement.
-
-## Challenges we ran into
-
-- **Fine-tuning AI content:** We needed to adjust the prompts for OpenAI to ensure that the generated phishing scenarios (email, SMS text, website) were realistic and aligned with the educational objectives. One of the main challenges was ensuring these scenarios fit properly into the templates we created and were structured in a way that could be seamlessly parsed and passed into the frontend.
-- **Difficulty balancing:** Ensuring the game remained challenging but not overwhelming was crucial. We had to carefully structure the levels and gradually introduce new phishing elements to make the learning curve smooth.
 
 ## Accomplishments we're proud of
 
